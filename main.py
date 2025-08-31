@@ -88,7 +88,7 @@ def write_seo_post(vertical, article):
     img_urls  = [f["payload"] for f in flow if f["type"] == "img"]
 
     prompt = f"""
-You are an SEO copywriter. Re-write the following article as **HTML** for Blogger in French.
+You are an SEO copywriter in 2025. Re-write the following article as **HTML** for Blogger in French.
 
 Rules:
 - 400-800 words
