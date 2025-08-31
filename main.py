@@ -43,44 +43,46 @@ def top_articles(url, limit=1):
         for e in feed.entries[:limit]
     ]
 
-def extract_images_and_text(url):
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/125.0 Safari/537.36"
-        ),
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-    r = requests.get(url, headers=headers, timeout=15)
-    soup = BeautifulSoup(r.text, "lxml")
+from playwright.sync_api import sync_playwright
 
-    # strip clutter
+def extract_images_and_text(url):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/125.0 Safari/537.36"
+            )
+        )
+        page.goto(url, wait_until="networkidle", timeout=30000)
+
+        # wait for lazy images to load
+        page.wait_for_load_state("load")
+        page.wait_for_timeout(2000)  # extra cushion for JS
+
+        html = page.content()
+        browser.close()
+
+    soup = BeautifulSoup(html, "lxml")
     for tag in soup(["script", "style", "nav", "aside", "footer", "header"]):
         tag.decompose()
 
     flow = []
-
-    # walk every <p> and every <img>/<picture>
-    for el in soup.find_all(["p", "img", "picture"]):
+    for el in soup.find_all(["p", "img"]):
         if el.name == "p":
             txt = el.get_text(" ", strip=True)
             if len(txt) > 30:
                 flow.append({"type": "text", "payload": txt})
-        else:  # img or picture
-            img = el.find("img") if el.name == "picture" else el
-            if img:
-                # try every possible lazy attribute
-                src = (
-                    img.get("src")
-                    or img.get("data-src")
-                    or img.get("data-lazy-src")
-                    or img.get("data-original")
-                    or img.get("srcset", "").split()[0]  # first in srcset
-                )
-                if src and src.startswith("http") and "1x1" not in src:
-                    flow.append({"type": "img", "payload": src})
-
+        elif el.name == "img":
+            src = (
+                el.get("src")
+                or el.get("data-src")
+                or el.get("data-lazy-src")
+                or el.get("data-original")
+            )
+            if src and src.startswith("http") and "1x1" not in src:
+                flow.append({"type": "img", "payload": src})
     return flow
 
 def build_clickbait_title(original, vertical):
