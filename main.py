@@ -31,7 +31,7 @@ SECTIONS = {
     "Healthcare":   "https://feeds.bbci.co.uk/news/health/rss.xml",
     "Finance":      "https://feeds.bbci.co.uk/news/business/rss.xml",
     "Technology":   "https://feeds.bbci.co.uk/news/technology/rss.xml",
-    "Food Industry":"https://feeds.bbci.co.uk/news/world/rss.xml"
+    "News world":"https://feeds.bbci.co.uk/news/world/rss.xml"
 }
 
 # -------------------------------------------------------------------
