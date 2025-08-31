@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Create 5 SEO posts (one per vertical) using trending articles
-and DeepSeek via OpenRouter, then mail them to Blogger.
+and Google Gemini, then mail them to Blogger.
 """
 import os
 import ssl
@@ -11,23 +11,20 @@ from email.mime.text import MIMEText
 from datetime import datetime
 
 import feedparser
+import google.generativeai as genai
 import requests
 from bs4 import BeautifulSoup
-from openai import OpenAI  # >=1.0.0 syntax
 
 # ---------- CONFIG -------------------------------------------------
 BLOGGER_MAIL = os.environ["BLOGGER_SECRET_MAIL"]
 GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_PASS"]
 
-# OpenRouter + DeepSeek
-client = OpenAI(
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    base_url="https://openrouter.ai/api/v1"
-)
-MODEL = "deepseek/deepseek-chat"
+# Gemini
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+MODEL = "gemini-2.0-flash"
 
-# Google News RSS feeds for the 5 verticals
+# Google News RSS feeds
 SECTIONS = {
     "Sport":        "https://news.google.com/rss/search?q=category:sports&hl=en-US&gl=US",
     "Healthcare":   "https://news.google.com/rss/search?q=category:health&hl=en-US&gl=US",
@@ -38,7 +35,6 @@ SECTIONS = {
 # -------------------------------------------------------------------
 
 def top_articles(url, limit=1):
-    """Return <limit> most-recent Google-News items."""
     feed = feedparser.parse(url)
     return [
         {"title": e.title, "link": e.link, "summary": e.get("summary", "")}
@@ -46,7 +42,6 @@ def top_articles(url, limit=1):
     ]
 
 def fetch_text(url):
-    """Grab first ~800 chars of article body for context."""
     try:
         r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(r.text, "html.parser")
@@ -56,7 +51,6 @@ def fetch_text(url):
         return ""
 
 def write_seo_post(vertical, article):
-    """Generate a short SEO-optimised post via DeepSeek."""
     prompt = f"""
 You are an experienced SEO copywriter.
 Write a 300–400 word, unique blog post in French about the following trending news.
@@ -70,24 +64,16 @@ Source URL: {article['link']}
 Snippet: {article['summary']}
 Body preview: {fetch_text(article['link'])}
 """
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        extra_headers={
-            "HTTP-Referer": f"https://github.com/{os.getenv('GITHUB_REPOSITORY', 'user/repo')}",
-            "X-Title": "Trending-Blogger-Bot"
-        }
-    )
-    return response.choices[0].message.content.strip()
+    model = genai.GenerativeModel(MODEL)
+    response = model.generate_content(prompt)
+    return response.text
 
 def mail_post(subject, html_body):
-    """Send one HTML email (becomes a Blogger post)."""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"]    = GMAIL_USER
-    msg["To"]      = BLOGGER_MAIL
+    msg["From"] = GMAIL_USER
+    msg["To"] = BLOGGER_MAIL
     msg.attach(MIMEText(html_body, "html"))
-
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(GMAIL_USER, GMAIL_PASS)
