@@ -27,11 +27,11 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
 
 SECTIONS = {
-    "Sport":        "https://news.google.com/rss/search?q=category:sports&hl=en-US&gl=US",
-    "Healthcare":   "https://news.google.com/rss/search?q=category:health&hl=en-US&gl=US",
-    "Finance":      "https://news.google.com/rss/search?q=category:business&hl=en-US&gl=US",
-    "Technology":   "https://news.google.com/rss/search?q=category:technology&hl=en-US&gl=US",
-    "Food Industry":"https://news.google.com/rss/search?q=food%20industry&hl=en-US&gl=US"
+    "Sport":        "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml",
+    "Healthcare":   "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
+    "Finance":      "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+    "Technology":   "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+    "Food Industry":"https://rss.nytimes.com/services/xml/rss/nyt/Food.xml"
 }
 
 # -------------------------------------------------------------------
@@ -95,7 +95,7 @@ You are an SEO copywriter in 2025. Re-write the following article as **HTML** fo
 Rules:
 - 400-800 words
 - Start with <p class='meta'>META-DESC (max 155 chars)</p>
-- Use line breaks between paragraphs and large sections like H2/H3.
+- Always use line breaks between paragraphs and headings.
 - Use H2/H3 headings with emojis
 - Space out the text where necessary to make it more readable.
 - Reproduce the **exact order** of paragraphs & images
