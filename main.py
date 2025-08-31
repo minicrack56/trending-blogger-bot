@@ -33,6 +33,7 @@ SECTIONS = {
     "Technology":   "https://news.google.com/rss/search?q=category:technology&hl=en-US&gl=US",
     "Food Industry":"https://news.google.com/rss/search?q=food%20industry&hl=en-US&gl=US"
 }
+
 # -------------------------------------------------------------------
 
 def top_articles(url, limit=1):
