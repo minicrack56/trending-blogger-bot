@@ -1,48 +1,84 @@
 #!/usr/bin/env python3
 """
-Pull top-5 daily searches for 5 verticals and mail them to Blogger.
+Create 5 SEO posts (one per vertical) using trending articles
+and DeepSeek via OpenRouter, then mail them to Blogger.
 """
-import os, ssl, smtplib, datetime
-from email.mime.text import MIMEText
+import os
+import ssl
+import smtplib
 from email.mime.multipart import MIMEMultipart
-import feedparser
-from pytrends.request import TrendReq
+from email.mime.text import MIMEText
+from datetime import datetime
 
-# CONFIG -------------------------------------------------
+import feedparser
+import openai
+import requests
+from bs4 import BeautifulSoup
+
+# ---------- CONFIG -------------------------------------------------
 BLOGGER_MAIL = os.environ["BLOGGER_SECRET_MAIL"]
 GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_PASS"]
-SPORT_ID     = "20"
-HEALTH_ID    = "45"
-FINANCE_ID   = "12"
-TECH_ID      = "5"
-FOOD_ID      = "71"
-# --------------------------------------------------------
+OPENROUTER_KEY = os.environ["OPENROUTER_API_KEY"]
 
-def top_queries(cat_id):
-    """Return top 5 rising queries from Google Trends RSS for a category."""
-    url = f"https://trends.google.com/trends/trendingsearches/daily/rss?geo=US&cat={cat_id}"
+# OpenRouter endpoint & DeepSeek model
+openai.api_key = OPENROUTER_KEY
+openai.api_base = "https://openrouter.ai/api/v1"
+MODEL = "deepseek/deepseek-chat"  # or deepseek/deepseek-r1:free
+
+# Google News RSS for each vertical
+SECTIONS = {
+    "Sport":        "https://news.google.com/rss/search?q=category:sports&hl=en-US&gl=US",
+    "Healthcare":   "https://news.google.com/rss/search?q=category:health&hl=en-US&gl=US",
+    "Finance":      "https://news.google.com/rss/search?q=category:business&hl=en-US&gl=US",
+    "Technology":   "https://news.google.com/rss/search?q=category:technology&hl=en-US&gl=US",
+    "Food Industry":"https://news.google.com/rss/search?q=food%20industry&hl=en-US&gl=US"
+}
+# -------------------------------------------------------------------
+
+def top_articles(url, limit=1):
     feed = feedparser.parse(url)
-    return [e.title for e in feed.entries][:5]
+    return [
+        {"title": e.title, "link": e.link, "summary": e.get("summary", "")}
+        for e in feed.entries[:limit]
+    ]
 
-def build_html():
-    today = datetime.date.today().strftime("%Y-%m-%d")
-    html = f"<h1>🔥 Top Searches for {today}</h1>"
-    for name, cat in [
-        ("🏀 Sport", SPORT_ID),
-        ("💊 Healthcare", HEALTH_ID),
-        ("💰 Finance", FINANCE_ID),
-        ("🤖 Technology", TECH_ID),
-        ("🍔 Food Industry", FOOD_ID),
-    ]:
-        html += f"<details><summary><strong>{name}</strong></summary><ol>"
-        html += "".join(f"<li>{q}</li>" for q in top_queries(cat))
-        html += "</ol></details><br>"
-    return html
+def fetch_text(url):
+    try:
+        r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+        soup = BeautifulSoup(r.text, "html.parser")
+        paragraphs = [p.get_text(strip=True) for p in soup.find_all("p") if p.get_text(strip=True)]
+        return " ".join(paragraphs)[:800]
+    except Exception:
+        return ""
 
-def send_mail(html_body):
+def write_seo_post(vertical, article):
+    prompt = f"""
+You are an experienced SEO copywriter.
+Write a 300–400 word, unique blog post in French about the following trending news.
+Include the keyword "{vertical.lower()}" naturally 2–3 times.
+Add a catchy meta-description (max 155 chars) at the top in <p class='meta'></p>.
+Use H2 for the headline and H3 for sub-headings.
+Cite the original source with a link.
+
+Title: {article['title']}
+Source URL: {article['link']}
+Snippet: {article['summary']}
+Body preview: {fetch_text(article['link'])}
+"""
+    response = openai.ChatCompletion.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        headers={
+            "HTTP-Referer": f"https://github.com/{os.getenv('GITHUB_REPOSITORY', 'user/repo')}",
+            "X-Title": "Trending-Blogger-Bot"
+        }
+    )
+    return response.choices[0].message.content.strip()
+
+def mail_post(subject, html_body):
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Daily Trending Search Digest – {datetime.date.today()}"
+    msg["Subject"] = subject
     msg["From"]    = GMAIL_USER
     msg["To"]      = BLOGGER_MAIL
     msg.attach(MIMEText(html_body, "html"))
@@ -52,5 +88,15 @@ def send_mail(html_body):
         server.login(GMAIL_USER, GMAIL_PASS)
         server.sendmail(GMAIL_USER, BLOGGER_MAIL, msg.as_string())
 
+def main():
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    for vertical, rss_url in SECTIONS.items():
+        articles = top_articles(rss_url, limit=1)
+        if not articles:
+            continue
+        art = articles[0]
+        body = write_seo_post(vertical, art)
+        mail_post(f"{vertical} Hot Take – {today}", body)
+
 if __name__ == "__main__":
-    send_mail(build_html())
+    main()
