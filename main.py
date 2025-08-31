@@ -95,7 +95,7 @@ Rules:
 - Start with <p class='meta'>META-DESC (max 155 chars)</p>
 - Use H2/H3 with emojis
 - Use line breaks between paragraphs and large sections.
-- Space out your text where necessary to make it more readable.
+- Space out the text where necessary to make it more readable.
 - Reproduce the **exact order** of paragraphs & images
 - For every img URL insert:
   <img src="URL" alt="{keyword}" width="800" height="450" style="border-radius:8px;">
