@@ -1,8 +1,8 @@
 name: Daily Trend Mail
 on:
   schedule:
-    - cron: "0 8 * * *"   # 08:00 UTC every day
-  workflow_dispatch:       # manual trigger button
+    - cron: "0 8 * * *"
+  workflow_dispatch:
 
 jobs:
   mail:
@@ -18,3 +18,4 @@ jobs:
           BLOGGER_SECRET_MAIL: ${{ secrets.BLOGGER_SECRET_MAIL }}
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_PASS:          ${{ secrets.GMAIL_PASS }}
+          OPENROUTER_API_KEY:  ${{ secrets.OPENROUTER_API_KEY }}
