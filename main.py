@@ -11,22 +11,23 @@ from email.mime.text import MIMEText
 from datetime import datetime
 
 import feedparser
-import openai
 import requests
 from bs4 import BeautifulSoup
+from openai import OpenAI  # >=1.0.0 syntax
 
 # ---------- CONFIG -------------------------------------------------
 BLOGGER_MAIL = os.environ["BLOGGER_SECRET_MAIL"]
 GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_PASS"]
-OPENROUTER_KEY = os.environ["OPENROUTER_API_KEY"]
 
-# OpenRouter endpoint & DeepSeek model
-openai.api_key = OPENROUTER_KEY
-openai.api_base = "https://openrouter.ai/api/v1"
-MODEL = "deepseek/deepseek-chat"  # or deepseek/deepseek-r1:free
+# OpenRouter + DeepSeek
+client = OpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    base_url="https://openrouter.ai/api/v1"
+)
+MODEL = "deepseek/deepseek-chat"
 
-# Google News RSS for each vertical
+# Google News RSS feeds for the 5 verticals
 SECTIONS = {
     "Sport":        "https://news.google.com/rss/search?q=category:sports&hl=en-US&gl=US",
     "Healthcare":   "https://news.google.com/rss/search?q=category:health&hl=en-US&gl=US",
@@ -37,6 +38,7 @@ SECTIONS = {
 # -------------------------------------------------------------------
 
 def top_articles(url, limit=1):
+    """Return <limit> most-recent Google-News items."""
     feed = feedparser.parse(url)
     return [
         {"title": e.title, "link": e.link, "summary": e.get("summary", "")}
@@ -44,6 +46,7 @@ def top_articles(url, limit=1):
     ]
 
 def fetch_text(url):
+    """Grab first ~800 chars of article body for context."""
     try:
         r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(r.text, "html.parser")
@@ -53,6 +56,7 @@ def fetch_text(url):
         return ""
 
 def write_seo_post(vertical, article):
+    """Generate a short SEO-optimised post via DeepSeek."""
     prompt = f"""
 You are an experienced SEO copywriter.
 Write a 300–400 word, unique blog post in French about the following trending news.
@@ -66,10 +70,10 @@ Source URL: {article['link']}
 Snippet: {article['summary']}
 Body preview: {fetch_text(article['link'])}
 """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "user", "content": prompt}],
-        headers={
+        extra_headers={
             "HTTP-Referer": f"https://github.com/{os.getenv('GITHUB_REPOSITORY', 'user/repo')}",
             "X-Title": "Trending-Blogger-Bot"
         }
@@ -77,6 +81,7 @@ Body preview: {fetch_text(article['link'])}
     return response.choices[0].message.content.strip()
 
 def mail_post(subject, html_body):
+    """Send one HTML email (becomes a Blogger post)."""
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = GMAIL_USER
@@ -91,12 +96,9 @@ def mail_post(subject, html_body):
 def main():
     today = datetime.utcnow().strftime("%Y-%m-%d")
     for vertical, rss_url in SECTIONS.items():
-        articles = top_articles(rss_url, limit=1)
-        if not articles:
-            continue
-        art = articles[0]
-        body = write_seo_post(vertical, art)
-        mail_post(f"{vertical} Hot Take – {today}", body)
+        for article in top_articles(rss_url, limit=1):
+            body = write_seo_post(vertical, article)
+            mail_post(f"{vertical} Hot Take – {today}", body)
 
 if __name__ == "__main__":
     main()
