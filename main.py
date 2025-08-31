@@ -27,11 +27,11 @@ genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 MODEL = "gemini-2.5-flash"
 
 SECTIONS = {
-    "Sport":        "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml",
-    "Healthcare":   "https://rss.nytimes.com/services/xml/rss/nyt/Health.xml",
-    "Finance":      "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
-    "Technology":   "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
-    "Food Industry":"https://rss.nytimes.com/services/xml/rss/nyt/Food.xml"
+    "Sport":        "https://feeds.bbci.co.uk/sport/rss.xml",
+    "Healthcare":   "https://feeds.bbci.co.uk/news/health/rss.xml",
+    "Finance":      "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "Technology":   "https://feeds.bbci.co.uk/news/technology/rss.xml",
+    "Food Industry":"https://feeds.bbci.co.uk/news/world/rss.xml"
 }
 
 # -------------------------------------------------------------------
