@@ -1,18 +1,15 @@
-# .github/workflows/daily.yml
-name: Daily Trend Mail
+name: Daily Trend Mail with Playwright
 
 on:
   schedule:
-    - cron: "0 8 * * *"          # 08:00 UTC every day
-  workflow_dispatch:              # manual trigger button
+    - cron: "0 8 * * *"
+  workflow_dispatch:
 
 jobs:
   mail:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,7 +17,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install playwright
+          playwright install chromium
 
       - name: Run bot
         run: python main.py
