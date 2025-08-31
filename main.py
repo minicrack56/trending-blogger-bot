@@ -45,26 +45,27 @@ def top_articles(url, limit=1):
 
 def extract_images_and_text(url):
     """
-    Walk the source page and return ordered list of
-    {'type':'text'|'img', 'payload': str}
+    Fetch the *real* article page and return ordered
+    [{'type':'text'|'img', 'payload': str}]
     """
-    r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-    soup = BeautifulSoup(r.text, "html.parser")
+    r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+    soup = BeautifulSoup(r.text, "lxml")
 
-    # Remove non-content tags
-    for tag in soup(["script", "style", "nav", "aside", "footer"]):
+    # Remove clutter
+    for tag in soup(["script", "style", "nav", "aside", "footer", "header"]):
         tag.decompose()
 
     flow = []
+
+    # Walk every paragraph & image in DOM order
     for el in soup.find_all(["p", "img"]):
         if el.name == "p":
             txt = el.get_text(strip=True)
             if txt:
                 flow.append({"type": "text", "payload": txt})
         elif el.name == "img":
-            src = el.get("src") or el.get("data-src")
-            if src:
-                src = urljoin(url, src)
+            src = (el.get("src") or el.get("data-src") or "").strip()
+            if src and src.startswith("http"):
                 flow.append({"type": "img", "payload": src})
     return flow
 
@@ -94,8 +95,8 @@ You are an SEO copywriter in 2025. Re-write the following article as **HTML** fo
 Rules:
 - 400-800 words
 - Start with <p class='meta'>META-DESC (max 155 chars)</p>
+- Use line breaks between paragraphs and large sections like H2/H3.
 - Use H2/H3 headings with emojis
-- Use line breaks between paragraphs and large sections.
 - Space out the text where necessary to make it more readable.
 - Reproduce the **exact order** of paragraphs & images
 - For every img URL insert:
