@@ -70,7 +70,7 @@ def extract_images_and_text(url):
 def build_clickbait_title(original, vertical):
     prompt = f"""
 Rewrite the headline below in french into a punchy, click-magnet title (max 70 chars).
-Add one emoji at the start. Keep keywords. Use only one punchy headline per articles
+Add one emoji at the start. Keep keywords if necessary. choose and use only one punchy headline per articles.
 
 Headline: {original}
 Vertical: {vertical}
