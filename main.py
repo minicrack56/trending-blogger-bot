@@ -52,5 +52,5 @@ def send_mail(html_body):
         server.login(GMAIL_USER, GMAIL_PASS)
         server.sendmail(GMAIL_USER, BLOGGER_MAIL, msg.as_string())
 
-if name == "main":
+if __name__ == "__main__":
     send_mail(build_html())
