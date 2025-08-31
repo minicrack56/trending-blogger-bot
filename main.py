@@ -45,7 +45,7 @@ def build_clickbait_title(original, vertical):
     """Turn a boring headline into a scroll-stopper."""
     prompt = f"""
 Rewrite the headline below in french into a punchy, click-magnet title (max 70 chars).
-Add one emoji at the start. Keep keywords.
+Add one emoji at the start. Keep keywords. use only one punchy headline per articles
 
 Headline: {original}
 Vertical: {vertical}
@@ -64,22 +64,19 @@ def write_seo_post(vertical, article):
 Write a fully-formatted HTML blog post for Blogger in French.
 
 Requirements:
-- 400-800 words
-- Start with
-
-META-DESC
-(max 155 chars)
-- Add a Table of Contents
-with 3-4 jump links
+- 400-500 words
+- Start with <p class='meta'>META-DESC</p> (max 155 chars)
+- Add a Table of Contents <nav id='toc'> with 3-4 jump links
 - Use line breaks between paragraphs and large sections.
--Space out your text where necessary to make it more readable.
+- Space out your text where necessary to make it more readable.
 - Use H2 and H3 headings with emojis
 - Bullet lists ✅
-- Include 3 royalty-free image placeholders ()
+- Include 3 royalty-free image placeholders (<img src='https://picsum.photos/800/450/?KEYWORD'>)
 - Internal link to "latest tech news" (#)
 - Bold/italic for emphasis
 - End with a call-to-action
-- Cite source: original article
+- Cite source: <a href='{article["link"]}'>original article</a>
+
 
 Topic: {article["title"]}
 Snippet: {article["summary"]}
