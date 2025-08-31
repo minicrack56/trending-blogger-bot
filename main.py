@@ -44,29 +44,41 @@ def top_articles(url, limit=1):
     ]
 
 def extract_images_and_text(url):
-    """
-    Fetch the real article page and return ordered
-    [{'type':'text'|'img', 'payload': str}]
-    """
-    r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/125.0 Safari/537.36"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    r = requests.get(url, headers=headers, timeout=15)
     soup = BeautifulSoup(r.text, "lxml")
 
-    # remove clutter
-    for tag in soup(["script", "style", "nav", "aside", "footer", "header", "form"]):
+    # strip clutter
+    for tag in soup(["script", "style", "nav", "aside", "footer", "header"]):
         tag.decompose()
 
     flow = []
 
-    for el in soup.find_all(["p", "figure", "img"]):
+    # walk every <p> and every <img>/<picture>
+    for el in soup.find_all(["p", "img", "picture"]):
         if el.name == "p":
             txt = el.get_text(" ", strip=True)
-            if txt and len(txt) > 30:
+            if len(txt) > 30:
                 flow.append({"type": "text", "payload": txt})
-        elif el.name in ("img", "figure"):
-            img = el.find("img") if el.name == "figure" else el
+        else:  # img or picture
+            img = el.find("img") if el.name == "picture" else el
             if img:
-                src = (img.get("src") or img.get("data-src") or img.get("data-lazy-src"))
-                if src and src.startswith("http") and "1x1" not in src and "gif" not in src:
+                # try every possible lazy attribute
+                src = (
+                    img.get("src")
+                    or img.get("data-src")
+                    or img.get("data-lazy-src")
+                    or img.get("data-original")
+                    or img.get("srcset", "").split()[0]  # first in srcset
+                )
+                if src and src.startswith("http") and "1x1" not in src:
                     flow.append({"type": "img", "payload": src})
 
     return flow
@@ -92,19 +104,19 @@ def write_seo_post(vertical, article):
     img_urls  = [f["payload"] for f in flow if f["type"] == "img"]
 
     prompt = f"""
-You are an SEO copywriter in 2025. Re-write the following article as **HTML** for Blogger in French.
+You are an SEO copywriter in 2025. Re-write the following article as HTML for Blogger post in French.
 
 Rules:
 - 400-800 words
 - Start with <p class='meta'>META-DESC (max 155 chars)</p>
-- Always use line breaks between paragraphs and headings.
+- Always use line breaks/space between paragraphs and headings must be separe by a line break.
 - Use H2/H3 headings with emojis
 - Space out the text where necessary to make it more readable.
-- Reproduce the **exact order** of paragraphs & images
+- Reproduce the exact order of paragraphs & images
 - For every img URL insert:
   <img src="URL" alt="{keyword}" width="800" height="450" style="border-radius:8px;">
 - Add TOC <nav id='toc'> with jump-links to each H2
-- Bullet lists ✅, bold/italic emphasis
+- Bullet lists ✅, bold/italic or color for emphasis
 - End with a call-to-action
 - Cite: <a href='{article["link"]}'>original article</a>
 
