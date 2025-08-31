@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 """
 SEO-ready blog posts with catchy titles, TOC, emojis, images.
-Uses Google Gemini via OpenRouter.
+Uses Google Gemini and embeds **all images in the exact order**
+they appear in the original article.
 """
-import os, ssl, smtplib, textwrap
+import os
+import ssl
+import smtplib
+import re
+from urllib.parse import urljoin
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
-import feedparser, requests, google.generativeai as genai
+
+import feedparser
+import google.generativeai as genai
+import requests
 from bs4 import BeautifulSoup
 
 # ---------- CONFIG -------------------------------------------------
@@ -16,7 +24,7 @@ GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_PASS"]
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-1.5-flash"
 
 SECTIONS = {
     "Sport":        "https://news.google.com/rss/search?q=category:sports&hl=en-US&gl=US",
@@ -29,20 +37,37 @@ SECTIONS = {
 
 def top_articles(url, limit=1):
     feed = feedparser.parse(url)
-    return [{"title": e.title, "link": e.link, "summary": e.get("summary", "")}
-            for e in feed.entries[:limit]]
+    return [
+        {"title": e.title, "link": e.link, "summary": e.get("summary", "")}
+        for e in feed.entries[:limit]
+    ]
 
-def fetch_text(url):
-    try:
-        r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-        soup = BeautifulSoup(r.text, "html.parser")
-        return " ".join(p.get_text(strip=True)
-                        for p in soup.find_all("p") if p.get_text(strip=True))[:800]
-    except Exception:
-        return ""
+def extract_images_and_text(url):
+    """
+    Walk the source page and return ordered list of
+    {'type':'text'|'img', 'payload': str}
+    """
+    r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    # Remove non-content tags
+    for tag in soup(["script", "style", "nav", "aside", "footer"]):
+        tag.decompose()
+
+    flow = []
+    for el in soup.find_all(["p", "img"]):
+        if el.name == "p":
+            txt = el.get_text(strip=True)
+            if txt:
+                flow.append({"type": "text", "payload": txt})
+        elif el.name == "img":
+            src = el.get("src") or el.get("data-src")
+            if src:
+                src = urljoin(url, src)
+                flow.append({"type": "img", "payload": src})
+    return flow
 
 def build_clickbait_title(original, vertical):
-    """Turn a boring headline into a scroll-stopper."""
     prompt = f"""
 Rewrite the headline below in french into a punchy, click-magnet title (max 70 chars).
 Add one emoji at the start. Keep keywords. use only one punchy headline per articles
@@ -53,39 +78,40 @@ Vertical: {vertical}
     model = genai.GenerativeModel(MODEL)
     return model.generate_content(prompt).text.strip().strip('"')
 
-def free_img(keyword):
-    """Return a royalty-free Unsplash img for the keyword."""
-    return f"https://picsum.photos/800/450?{keyword.replace(' ', '-')}"
-
 def write_seo_post(vertical, article):
+    flow = extract_images_and_text(article["link"])
     title = build_clickbait_title(article["title"], vertical)
     keyword = vertical.lower()
-    prompt = f"""
-Write a fully-formatted HTML blog post for Blogger in French.
 
-Requirements:
-- 400-500 words
-- Start with <p class='meta'>META-DESC</p> (max 155 chars)
-- Add a Table of Contents <nav id='toc'> with 3-4 jump links
+    # Build plaintext for Gemini context
+    text_only = " ".join([f["payload"] for f in flow if f["type"] == "text"])[:1000]
+    img_urls  = [f["payload"] for f in flow if f["type"] == "img"]
+
+    prompt = f"""
+You are an SEO copywriter. Re-write the following article as **HTML** for Blogger in French.
+
+Rules:
+- 400-800 words
+- Start with <p class='meta'>META-DESC (max 155 chars)</p>
+- Use H2/H3 with emojis
 - Use line breaks between paragraphs and large sections.
 - Space out your text where necessary to make it more readable.
-- Use H2 and H3 headings with emojis
-- Bullet lists ✅
-- Include 3 royalty-free image placeholders (<img src='https://picsum.photos/800/450/?KEYWORD'>)
-- Internal link to "latest tech news" (#)
-- Bold/italic for emphasis
+- Reproduce the **exact order** of paragraphs & images
+- For every img URL insert:
+  <img src="URL" alt="{keyword}" width="800" height="450" style="border-radius:8px;">
+- Add TOC <nav id='toc'> with jump-links to each H2
+- Bullet lists ✅, bold/italic emphasis
 - End with a call-to-action
-- Cite source: <a href='{article["link"]}'>original article</a>
+- Cite: <a href='{article["link"]}'>original article</a>
 
+Plain text snippets:
+{text_only}
 
-Topic: {article["title"]}
-Snippet: {article["summary"]}
-Body preview: {fetch_text(article["link"])}
-Primary keyword: {keyword}
+Images in order:
+{img_urls}
 """
     model = genai.GenerativeModel(MODEL)
     html = model.generate_content(prompt).text
-    # Gemini sometimes wraps in ```html``` — strip it
     if html.startswith("```html"):
         html = html[7:-4]
     return html
@@ -106,10 +132,8 @@ def main():
     for vertical, rss_url in SECTIONS.items():
         for article in top_articles(rss_url, limit=1):
             body = write_seo_post(vertical, article)
-            # Use the new punchy title as email subject
             subject = build_clickbait_title(article["title"], vertical)
             mail_post(subject, body)
 
 if __name__ == "__main__":
     main()
-
