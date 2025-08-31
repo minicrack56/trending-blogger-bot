@@ -44,7 +44,7 @@ def fetch_text(url):
 def build_clickbait_title(original, vertical):
     """Turn a boring headline into a scroll-stopper."""
     prompt = f"""
-Rewrite the headline below into a punchy, click-magnet title (max 70 chars).
+Rewrite the headline below in french into a punchy, click-magnet title (max 70 chars).
 Add one emoji at the start. Keep keywords.
 
 Headline: {original}
@@ -53,9 +53,9 @@ Vertical: {vertical}
     model = genai.GenerativeModel(MODEL)
     return model.generate_content(prompt).text.strip().strip('"')
 
-def unsplash_img(keyword):
+def free_img(keyword):
     """Return a royalty-free Unsplash img for the keyword."""
-    return f"https://source.unsplash.com/800x450/?{keyword.replace(' ', '-')}"
+    return f"https://picsum.photos/800/450?{keyword.replace(' ', '-')}"
 
 def write_seo_post(vertical, article):
     title = build_clickbait_title(article["title"], vertical)
@@ -71,6 +71,8 @@ META-DESC
 (max 155 chars)
 - Add a Table of Contents
 with 3-4 jump links
+- Use line breaks between paragraphs and large sections.
+-Space out your text where necessary to make it more readable.
 - Use H2 and H3 headings with emojis
 - Bullet lists ✅
 - Include 3 royalty-free image placeholders ()
