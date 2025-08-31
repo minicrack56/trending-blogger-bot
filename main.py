@@ -45,28 +45,30 @@ def top_articles(url, limit=1):
 
 def extract_images_and_text(url):
     """
-    Fetch the *real* article page and return ordered
+    Fetch the real article page and return ordered
     [{'type':'text'|'img', 'payload': str}]
     """
     r = requests.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
     soup = BeautifulSoup(r.text, "lxml")
 
-    # Remove clutter
-    for tag in soup(["script", "style", "nav", "aside", "footer", "header"]):
+    # remove clutter
+    for tag in soup(["script", "style", "nav", "aside", "footer", "header", "form"]):
         tag.decompose()
 
     flow = []
 
-    # Walk every paragraph & image in DOM order
-    for el in soup.find_all(["p", "img"]):
+    for el in soup.find_all(["p", "figure", "img"]):
         if el.name == "p":
-            txt = el.get_text(strip=True)
-            if txt:
+            txt = el.get_text(" ", strip=True)
+            if txt and len(txt) > 30:
                 flow.append({"type": "text", "payload": txt})
-        elif el.name == "img":
-            src = (el.get("src") or el.get("data-src") or "").strip()
-            if src and src.startswith("http"):
-                flow.append({"type": "img", "payload": src})
+        elif el.name in ("img", "figure"):
+            img = el.find("img") if el.name == "figure" else el
+            if img:
+                src = (img.get("src") or img.get("data-src") or img.get("data-lazy-src"))
+                if src and src.startswith("http") and "1x1" not in src and "gif" not in src:
+                    flow.append({"type": "img", "payload": src})
+
     return flow
 
 def build_clickbait_title(original, vertical):
