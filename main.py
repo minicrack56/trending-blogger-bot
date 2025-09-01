@@ -1,139 +1,120 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-SEO-ready blog posts with catchy titles, TOC, emojis, images.
-Uses Google Gemini and embeds **all images in the exact order**
-they appear in the original article.
+Daily Blogger feeder:
+- Each UTC day, pick 2 random categories from a fixed list (deterministic per day).
+- For each category, generate a punchy French clickbait title (<= 70 chars)
+  and a fully SEO-optimized HTML article for Blogger (no <html>/<body> wrapper).
+- Strong formatting: line breaks between headings & paragraphs, bullet lists,
+  bold/italic, inline code, occasional color spans, callouts, CTA.
+- Prevent duplicates: keep a JSON history of previously used titles and skip/regenerate.
+- Email each article to Blogger (subject = generated title).
+
+ENV required:
+  BLOGGER_SECRET_MAIL : blogger post-by-email address
+  GMAIL_USER          : Gmail username (sender)
+  GMAIL_PASS          : Gmail app password (NOT your regular password)
+  GEMINI_API_KEY      : Google Generative AI key
+
+Optional ENV:
+  GEMINI_MODEL        : default "gemini-2.5-flash"
+  HISTORY_FILE        : default ".data/blog_history.json"
+  ARTICLES_PER_DAY    : default 2
+  MAX_RETRIES_TITLE   : default 5
 """
+
 import os
 import ssl
 import smtplib
-import re
-from urllib.parse import urljoin
+import json
+import random
+import hashlib
+from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from datetime import datetime
 
-import feedparser
 import google.generativeai as genai
-import requests
-from bs4 import BeautifulSoup
 
-# ---------- CONFIG -------------------------------------------------
+# ---------------------- CONFIG ------------------------------------
 BLOGGER_MAIL = os.environ["BLOGGER_SECRET_MAIL"]
 GMAIL_USER   = os.environ["GMAIL_USER"]
 GMAIL_PASS   = os.environ["GMAIL_PASS"]
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-MODEL = "gemini-2.5-flash"
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-SECTIONS = {
-    "Sport":        "https://feeds.bbci.co.uk/sport/rss.xml",
-    "Healthcare":   "https://feeds.bbci.co.uk/news/health/rss.xml",
-    "Finance":      "https://feeds.bbci.co.uk/news/business/rss.xml",
-    "Technology":   "https://feeds.bbci.co.uk/news/technology/rss.xml",
-    "News world":"https://feeds.bbci.co.uk/news/world/rss.xml"
-}
+HISTORY_FILE = os.getenv("HISTORY_FILE", ".data/blog_history.json")
+ARTICLES_PER_DAY = int(os.getenv("ARTICLES_PER_DAY", "2"))
+MAX_RETRIES_TITLE = int(os.getenv("MAX_RETRIES_TITLE", "5"))
 
-# -------------------------------------------------------------------
+CATEGORIES = [
+    "Sécurité informatique et protection des données",
+    "Astuces et productivité",
+    "Maintenance et dépannage",
+    "Programmation et développement",
+    "Cloud, stockage et synchronisation",
+    "Android et iOS – Astuces",
+    "Bureautique et outils",
+    "Création de contenu et multimédia",
+    "Internet et navigation",
+    "Cybersécurité avancée",
+    "Technologie et projets DIY",
+    "Outils et services en ligne",
+    "Formation et apprentissage",
+    "Hacking Éthique & Sécurité",
+    "Programmation & Scripts de Sécurité",
+    "OSINT (Open Source Intelligence)",
+    "Pentesting Réseau",
+    "Sécurité Web & Bypass",
+    "Sécurité Mobile & Android",
+    "Dark Web & Anonymat",
+    "Cyberdéfense & Prévention",
+    "Hacking Éthique Avancé",
+    "Divers & Automatisation",
+]
 
-def top_articles(url, limit=1):
-    feed = feedparser.parse(url)
-    return [
-        {"title": e.title, "link": e.link, "summary": e.get("summary", "")}
-        for e in feed.entries[:limit]
-    ]
+# ---------------------- UTILS -------------------------------------
+def ensure_history_path(path: str):
+    d = os.path.dirname(path)
+    if d and not os.path.exists(d):
+        os.makedirs(d, exist_ok=True)
 
-from playwright.sync_api import sync_playwright
+def load_history(path: str):
+    ensure_history_path(path)
+    if not os.path.exists(path):
+        return {"titles": [], "days": {}}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"titles": [], "days": {}}
 
-def extract_images_and_text(url):
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/125.0 Safari/537.36"
-        ),
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-    r = requests.get(url, headers=headers, timeout=15)
-    soup = BeautifulSoup(r.text, "lxml")
+def save_history(path: str, data: dict):
+    ensure_history_path(path)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # strip clutter
-    for tag in soup(["script", "style", "nav", "aside", "footer", "header"]):
-        tag.decompose()
+def title_in_history(title: str, history: dict) -> bool:
+    # Normalize by lowercasing and hashing to be resilient
+    norm = title.strip().lower()
+    h = hashlib.sha1(norm.encode("utf-8")).hexdigest()
+    return h in history.get("titles", [])
 
-    flow = []
+def add_title_to_history(title: str, history: dict):
+    norm = title.strip().lower()
+    h = hashlib.sha1(norm.encode("utf-8")).hexdigest()
+    if "titles" not in history:
+        history["titles"] = []
+    if h not in history["titles"]:
+        history["titles"].append(h)
 
-    # walk every <p> and every <img>/<picture>
-    for el in soup.find_all(["p", "img", "picture"]):
-        if el.name == "p":
-            txt = el.get_text(" ", strip=True)
-            if len(txt) > 30:
-                flow.append({"type": "text", "payload": txt})
-        else:  # img or picture
-            img = el.find("img") if el.name == "picture" else el
-            if img:
-                # try every possible lazy attribute
-                src = (
-                    img.get("src")
-                    or img.get("data-src")
-                    or img.get("data-lazy-src")
-                    or img.get("data-original")
-                    or img.get("srcset", "").split()[0]  # first in srcset
-                )
-                if src and src.startswith("http") and "1x1" not in src:
-                    flow.append({"type": "img", "payload": src})
+def pick_daily_categories(today_utc: datetime, k: int) -> list:
+    # Deterministic per-date sample using seed = YYYY-MM-DD
+    seed = today_utc.strftime("%Y-%m-%d")
+    rng = random.Random(seed)
+    return rng.sample(CATEGORIES, k=min(k, len(CATEGORIES)))
 
-    return flow
-
-def build_clickbait_title(original, vertical):
-    prompt = f"""
-Rewrite the headline below in french into a punchy, click-magnet title (max 70 chars).
-Add one emoji at the start. Keep keywords if necessary. choose and use only one punchy headline per articles.
-
-Headline: {original}
-Vertical: {vertical}
-"""
-    model = genai.GenerativeModel(MODEL)
-    return model.generate_content(prompt).text.strip().strip('"')
-
-def write_seo_post(vertical, article):
-    flow = extract_images_and_text(article["link"])
-    title = build_clickbait_title(article["title"], vertical)
-    keyword = vertical.lower()
-
-    # Build plaintext for Gemini context
-    text_only = " ".join([f["payload"] for f in flow if f["type"] == "text"])[:1000]
-    img_urls  = [f["payload"] for f in flow if f["type"] == "img"]
-
-    prompt = f"""
-You are an SEO copywriter in 2025. Re-write the following article as HTML for Blogger post in French.
-
-Rules:
-- 400-800 words
-- Start with <p class='meta'>META-DESC (max 155 chars)</p>
-- Always use line breaks/space between paragraphs and headings must be separe by a line break.
-- Use H2/H3 headings with emojis
-- Space out the text where necessary to make it more readable.
-- Reproduce the exact order of paragraphs & images
-- For every img URL insert:
-  <img src="URL" alt="{keyword}" width="800" height="450" style="border-radius:8px;">
-- Add TOC <nav id='toc'> with jump-links to each H2
-- Bullet lists ✅, bold/italic or color for emphasis
-- End with a call-to-action
-- Cite: <a href='{article["link"]}'>original article</a>
-
-Plain text snippets:
-{text_only}
-
-Images in order:
-{img_urls}
-"""
-    model = genai.GenerativeModel(MODEL)
-    html = model.generate_content(prompt).text
-    if html.startswith("```html"):
-        html = html[7:-4]
-    return html
-
+# ---------------------- MAIL --------------------------------------
 def mail_post(subject, html_body):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -145,13 +126,134 @@ def mail_post(subject, html_body):
         server.login(GMAIL_USER, GMAIL_PASS)
         server.sendmail(GMAIL_USER, BLOGGER_MAIL, msg.as_string())
 
+# ---------------------- AI PROMPTS --------------------------------
+def gen_punchy_title_and_meta(category: str):
+    """
+    Returns (title, meta_desc). Both in French.
+    Title <= 70 chars, no quotes, 1 leading emoji.
+    """
+    prompt = f"""
+Tu es un rédacteur SEO en 2025. Crée pour la catégorie suivante un SEUL titre
+percutant et “clickbait” en français (max 70 caractères), commençant par UN seul emoji.
+Puis une méta description unique (max 155 caractères).
+
+Catégorie: {category}
+
+Renvoie STRICTEMENT au format JSON:
+{{"title": "...", "meta": "..."}}
+"""
+    model = genai.GenerativeModel(MODEL)
+    out = model.generate_content(prompt).text.strip()
+    # Best effort parse JSON without external libs
+    import re, json as pyjson
+    m = re.search(r'\{.*\}', out, re.S)
+    if not m:
+        # Fallback minimal
+        return ("✨ " + category.split("–")[0].strip(), "Découvrez nos conseils essentiels.")
+    try:
+        data = pyjson.loads(m.group(0))
+        title = data.get("title","").strip().strip('"')
+        meta  = data.get("meta","").strip()
+        if not title:
+            title = "✨ " + category.split("–")[0].strip()
+        return (title, meta[:155])
+    except Exception:
+        return ("✨ " + category.split("–")[0].strip(), "Découvrez nos conseils essentiels.")
+
+def gen_full_article_html(category: str, title: str, meta_desc: str):
+    """
+    Generate rich Blogger-ready HTML in French with strong formatting and SEO.
+    """
+    keyword = category.lower()
+    prompt = f"""
+Rédige un article de blog en FRANÇAIS pour Blogger (HTML uniquement, sans <html> ni <body>).
+
+Contexte:
+- Catégorie: {category}
+- Titre: {title}
+- Meta description: {meta_desc}
+
+Exigences SEO & mise en forme:
+- Longueur: 800–1200 mots
+- Première ligne EXACTE: <p class='meta'>{meta_desc}</p>
+- Titre H1: <h1>{title}</h1>
+- TOC ancré: <nav id='toc'> avec liens vers CHAQUE H2 (ancres id)
+- Structure: H2 (sections), H3 (sous-sections)
+- Laisse une LIGNE BLANCHE entre chaque titre et chaque paragraphe
+- Utilise des listes à puces (ul/li) quand pertinent
+- Mets en valeur avec <strong>, <em>, et du monospace <code> pour commandes/extraits
+- Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span> (modéré)
+- Ajoute 1–2 encadrés “conseil/alerte” avec <blockquote class="tip"> et <blockquote class="warning">
+- Inclure 1 court extrait de code pertinent (3–8 lignes) si la catégorie s’y prête (entre balises <pre><code>)
+- Ajoute un CTA final (inscription newsletter / partage / commentaire)
+- Pas d’images externes dans cet article
+- Pas d’auto-promo, pas de répétition inutile
+- Français naturel, ton professionnel et pédagogique
+
+Renvoie UNIQUEMENT le HTML.
+"""
+    model = genai.GenerativeModel(MODEL)
+    html = model.generate_content(prompt).text.strip()
+    # Nettoyage éventuel de ```html ... ```
+    if html.startswith("```html"):
+        html = html[7:]
+    if html.endswith("```"):
+        html = html[:-3]
+    return html
+
+# ---------------------- MAIN --------------------------------------
 def main():
-    today = datetime.utcnow().strftime("%Y-%m-%d")
-    for vertical, rss_url in SECTIONS.items():
-        for article in top_articles(rss_url, limit=1):
-            body = write_seo_post(vertical, article)
-            subject = build_clickbait_title(article["title"], vertical)
-            mail_post(subject, body)
+    today_utc = datetime.now(timezone.utc)
+    today_key = today_utc.strftime("%Y-%m-%d")
+
+    history = load_history(HISTORY_FILE)
+    if "days" not in history:
+        history["days"] = {}
+
+    # Choisir 2 catégories du jour, de manière déterministe
+    chosen = pick_daily_categories(today_utc, ARTICLES_PER_DAY)
+
+    # Optionnel: si vous voulez éviter de republier les mêmes catégories deux jours de suite,
+    # vous pouvez décommenter ce bloc pour re-tirer si identique à la veille.
+     yesterday_key = (today_utc - timedelta(days=1)).strftime("%Y-%m-%d")
+    if yesterday_key in history.get("days", {}):
+         ycats = set(history["days"][yesterday_key])
+         if set(chosen) == ycats:
+             # prenez les 2 suivantes dans un mélange fixe
+             rng = random.Random(today_key + "-alt")
+             pool = [c for c in CATEGORIES if c not in ycats]
+             if len(pool) >= ARTICLES_PER_DAY:
+                 chosen = rng.sample(pool, ARTICLES_PER_DAY)
+
+    posted_today = []
+    for category in chosen:
+        # 1) Générer titre + meta, avec tentatives pour éviter doublons
+        title, meta = gen_punchy_title_and_meta(category)
+
+        tries = 0
+        while title_in_history(title, history) and tries < MAX_RETRIES_TITLE:
+            tries += 1
+            title, meta = gen_punchy_title_and_meta(category)
+
+        # Si encore en doublon après N essais, skip cette catégorie
+        if title_in_history(title, history):
+            print(f"[SKIP] Titre déjà utilisé pour '{category}': {title}")
+            continue
+
+        # 2) Générer l'article HTML
+        html = gen_full_article_html(category, title, meta)
+
+        # 3) Envoyer l'email (sujet = titre)
+        mail_post(title, html)
+
+        # 4) Marquer comme publié (anti-doublon futur)
+        add_title_to_history(title, history)
+        posted_today.append(category)
+        print(f"[OK] Publié: {title} ({category})")
+
+    # Mémoriser les catégories du jour (info)
+    history["days"][today_key] = posted_today
+    save_history(HISTORY_FILE, history)
 
 if __name__ == "__main__":
     main()
