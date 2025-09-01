@@ -3,6 +3,7 @@
 """
 Daily Blogger feeder with history:
 - Picks 2 random categories per UTC day (deterministic)
+- Avoids consecutive repeats
 - Generates punchy French clickbait titles
 - Generates SEO-optimized HTML articles for Blogger
 - Strong formatting: headings, line breaks, bullet lists, bold/italic, code, colors, callouts, CTA
@@ -16,7 +17,7 @@ import smtplib
 import json
 import random
 import hashlib
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -158,11 +159,13 @@ Exigences SEO & mise en forme:
 - Laisse une LIGNE BLANCHE entre chaque titre et chaque paragraphe
 - Utilise des listes à puces (ul/li) quand pertinent
 - Mets en valeur avec <strong>, <em>, et du monospace <code> pour commandes/extraits
-- Ajoute quelques touches de couleur via <span style="color:#2363eb">…</span> (modéré)
+- Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span> (modéré)
 - Ajoute 1–2 encadrés “conseil/alerte” avec <blockquote class="tip"> et <blockquote class="warning">
-- Inclure 1 court extrait de code pertinent si la catégorie s’y prête (<pre><code>…</code></pre>)
-- Ajoute un CTA final (newsletter / partage / commentaire)
-- Pas d’images externes, pas d’auto-promo
+- Inclure 1 court extrait de code pertinent (3–8 lignes) si la catégorie s’y prête (entre balises <pre><code>)
+- Ajoute un CTA final (inscription newsletter / partage / commentaire)
+- Pas d’images externes dans cet article
+- Pas d’auto-promo, pas de répétition inutile
+- Français naturel, ton professionnel et pédagogique
 
 Renvoie UNIQUEMENT le HTML.
 """
@@ -183,7 +186,19 @@ def main():
     if "days" not in history:
         history["days"] = {}
 
+    # --- Choisir 2 catégories du jour de manière déterministe ---
     chosen = pick_daily_categories(today_utc, ARTICLES_PER_DAY)
+
+    # --- Éviter de republier exactement les mêmes catégories que la veille ---
+    yesterday_key = (today_utc - timedelta(days=1)).strftime("%Y-%m-%d")
+    if yesterday_key in history.get("days", {}):
+        ycats = set(history["days"][yesterday_key])
+        if set(chosen) == ycats:
+            rng = random.Random(today_key + "-alt")
+            pool = [c for c in CATEGORIES if c not in ycats]
+            if len(pool) >= ARTICLES_PER_DAY:
+                chosen = rng.sample(pool, ARTICLES_PER_DAY)
+
     posted_today = []
 
     for category in chosen:
