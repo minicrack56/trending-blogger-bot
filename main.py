@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 Daily Blogger feeder with history:
-- Picks 2 random categories per UTC day (deterministic)
-- Avoids consecutive repeats
-- Generates punchy French clickbait titles
-- Generates SEO-optimized HTML articles for Blogger
-- Strong formatting: headings, line breaks, bullet lists, bold/italic, code, colors, callouts, CTA
+- Picks 2 categories per UTC day sequentially
+- Loops back to top when reaching the end
+- Generates punchy French clickbait titles and unique meta descriptions
+- Ensures unique articles per loop
 - Prevents duplicates using .data/blog_history.json
-- Emails each article to Blogger (subject = title)
+- Emails each article to Blogger
 """
 
 import os
@@ -17,7 +16,7 @@ import smtplib
 import json
 import random
 import hashlib
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -69,12 +68,11 @@ def ensure_history_path(path: str):
 def load_history(path: str):
     ensure_history_path(path)
     if not os.path.exists(path):
-        return {"titles": [], "days": {}}
+        return {"titles": [], "days": {}, "cat_index": 0, "category_loops": {}}
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+        return json.load(open(path, "r", encoding="utf-8"))
     except Exception:
-        return {"titles": [], "days": {}}
+        return {"titles": [], "days": {}, "cat_index": 0, "category_loops": {}}
 
 def save_history(path: str, data: dict):
     ensure_history_path(path)
@@ -82,23 +80,15 @@ def save_history(path: str, data: dict):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 def title_in_history(title: str, history: dict) -> bool:
-    norm = title.strip().lower()
-    h = hashlib.sha1(norm.encode("utf-8")).hexdigest()
+    h = hashlib.sha1(title.strip().lower().encode("utf-8")).hexdigest()
     return h in history.get("titles", [])
 
 def add_title_to_history(title: str, history: dict):
-    norm = title.strip().lower()
-    h = hashlib.sha1(norm.encode("utf-8")).hexdigest()
+    h = hashlib.sha1(title.strip().lower().encode("utf-8")).hexdigest()
     if "titles" not in history:
         history["titles"] = []
     if h not in history["titles"]:
         history["titles"].append(h)
-
-# ---------------- UTILS ----------------
-def pick_daily_categories(today_utc: datetime, k: int) -> list:
-    seed = today_utc.strftime("%Y-%m-%d")
-    rng = random.Random(seed)
-    return rng.sample(CATEGORIES, k=min(k, len(CATEGORIES)))
 
 # ---------------- MAIL ----------------
 def mail_post(subject, html_body):
@@ -113,13 +103,15 @@ def mail_post(subject, html_body):
         server.sendmail(GMAIL_USER, BLOGGER_MAIL, msg.as_string())
 
 # ---------------- AI PROMPTS ----------------
-def gen_punchy_title_and_meta(category: str):
+def gen_punchy_title_and_meta(category: str, loop_index: int = 0):
     prompt = f"""
 Tu es un rédacteur SEO en 2025. Crée pour la catégorie suivante un SEUL titre
 percutant et “clickbait” en français (max 70 caractères), commençant par UN seul emoji.
 Puis une méta description unique (max 155 caractères).
 
 Catégorie: {category}
+C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie,
+donne un angle et un texte UNIQUE, différent des fois précédentes.
 
 Renvoie STRICTEMENT au format JSON:
 {{"title": "...", "meta": "..."}}
@@ -133,15 +125,14 @@ Renvoie STRICTEMENT au format JSON:
     try:
         data = pyjson.loads(m.group(0))
         title = data.get("title","").strip().strip('"')
-        meta  = data.get("meta","").strip()
+        meta  = data.get("meta","").strip()[:155]
         if not title:
             title = "✨ " + category.split("–")[0].strip()
-        return (title, meta[:155])
+        return title, meta
     except Exception:
         return ("✨ " + category.split("–")[0].strip(), "Découvrez nos conseils essentiels.")
 
-def gen_full_article_html(category: str, title: str, meta_desc: str):
-    keyword = category.lower()
+def gen_full_article_html(category: str, title: str, meta_desc: str, loop_index: int = 0):
     prompt = f"""
 Rédige un article de blog en FRANÇAIS pour Blogger (HTML uniquement, sans <html> ni <body>).
 
@@ -149,6 +140,8 @@ Contexte:
 - Catégorie: {category}
 - Titre: {title}
 - Meta description: {meta_desc}
+- C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie,
+  propose un angle DIFFÉRENT des fois précédentes et un contenu UNIQUE.
 
 Exigences SEO & mise en forme:
 - Longueur: 800–1200 mots
@@ -166,8 +159,7 @@ Exigences SEO & mise en forme:
 - Pas d’images externes dans cet article
 - Pas d’auto-promo, pas de répétition inutile
 - Français naturel, ton professionnel et pédagogique
-
-Renvoie UNIQUEMENT le HTML.
+- Interdiction de répéter mot pour mot les versions précédentes
 """
     model = genai.GenerativeModel(MODEL)
     html = model.generate_content(prompt).text.strip()
@@ -185,37 +177,40 @@ def main():
     history = load_history(HISTORY_FILE)
     if "days" not in history:
         history["days"] = {}
+    if "cat_index" not in history:
+        history["cat_index"] = 0
+    if "category_loops" not in history:
+        history["category_loops"] = {}
 
-    # --- Choisir 2 catégories du jour de manière déterministe ---
-    chosen = pick_daily_categories(today_utc, ARTICLES_PER_DAY)
-
-    # --- Éviter de republier exactement les mêmes catégories que la veille ---
-    yesterday_key = (today_utc - timedelta(days=1)).strftime("%Y-%m-%d")
-    if yesterday_key in history.get("days", {}):
-        ycats = set(history["days"][yesterday_key])
-        if set(chosen) == ycats:
-            rng = random.Random(today_key + "-alt")
-            pool = [c for c in CATEGORIES if c not in ycats]
-            if len(pool) >= ARTICLES_PER_DAY:
-                chosen = rng.sample(pool, ARTICLES_PER_DAY)
+    start_idx = history["cat_index"]
+    chosen = []
+    for i in range(ARTICLES_PER_DAY):
+        idx = (start_idx + i) % len(CATEGORIES)
+        chosen.append(CATEGORIES[idx])
+    history["cat_index"] = (start_idx + ARTICLES_PER_DAY) % len(CATEGORIES)
 
     posted_today = []
 
     for category in chosen:
-        title, meta = gen_punchy_title_and_meta(category)
+        loop_index = history["category_loops"].get(category, 0)
+
+        title, meta = gen_punchy_title_and_meta(category, loop_index)
         tries = 0
         while title_in_history(title, history) and tries < MAX_RETRIES_TITLE:
             tries += 1
-            title, meta = gen_punchy_title_and_meta(category)
+            title, meta = gen_punchy_title_and_meta(category, loop_index)
         if title_in_history(title, history):
             print(f"[SKIP] Titre déjà utilisé pour '{category}': {title}")
             continue
 
-        html = gen_full_article_html(category, title, meta)
+        html = gen_full_article_html(category, title, meta, loop_index)
         mail_post(title, html)
         add_title_to_history(title, history)
         posted_today.append(category)
-        print(f"[OK] Publié: {title} ({category})")
+
+        history["category_loops"][category] = loop_index + 1
+
+        print(f"[OK] Publié: {title} ({category}, loop {loop_index+1})")
 
     history["days"][today_key] = posted_today
     save_history(HISTORY_FILE, history)
