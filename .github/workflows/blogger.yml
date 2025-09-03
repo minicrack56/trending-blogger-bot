@@ -42,12 +42,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Ensure branch exists
-          git fetch origin || true
-          if git show-ref --verify --quiet refs/heads/automation-data; then
+          # Fetch latest automation-data branch if it exists
+          git fetch origin automation-data || true
+          if git ls-remote --exit-code origin automation-data; then
               git checkout automation-data
+              git pull --rebase origin automation-data || true
           else
-              git checkout --orphan automation-data
+              git checkout -b automation-data
           fi
 
           # Add history file
@@ -57,5 +58,5 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore: update blog history [skip ci]"
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:automation-data
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} automation-data
           fi
