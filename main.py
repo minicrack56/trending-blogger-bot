@@ -3,10 +3,11 @@
 """
 Daily Blogger feeder with history:
 - Picks 2 categories per UTC day sequentially
+- Avoids repeating categories within the same day
 - Loops back to top when reaching the end
-- Generates punchy French clickbait titles and unique meta descriptions
-- Ensures unique articles per loop
-- Prevents duplicates using .data/blog_history.json
+- Generates unique titles, meta descriptions, and articles
+- Avoids repeating content used in last 7 articles per category
+- Tracks history in .data/blog_history.json
 - Emails each article to Blogger
 """
 
@@ -14,7 +15,6 @@ import os
 import ssl
 import smtplib
 import json
-import random
 import hashlib
 from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
@@ -68,11 +68,23 @@ def ensure_history_path(path: str):
 def load_history(path: str):
     ensure_history_path(path)
     if not os.path.exists(path):
-        return {"titles": [], "days": {}, "cat_index": 0, "category_loops": {}}
+        return {
+            "titles": [],
+            "days": {},
+            "cat_index": 0,
+            "category_loops": {},
+            "recent_articles": {}
+        }
     try:
         return json.load(open(path, "r", encoding="utf-8"))
     except Exception:
-        return {"titles": [], "days": {}, "cat_index": 0, "category_loops": {}}
+        return {
+            "titles": [],
+            "days": {},
+            "cat_index": 0,
+            "category_loops": {},
+            "recent_articles": {}
+        }
 
 def save_history(path: str, data: dict):
     ensure_history_path(path)
@@ -103,15 +115,20 @@ def mail_post(subject, html_body):
         server.sendmail(GMAIL_USER, BLOGGER_MAIL, msg.as_string())
 
 # ---------------- AI PROMPTS ----------------
-def gen_punchy_title_and_meta(category: str, loop_index: int = 0):
+def gen_punchy_title_and_meta(category: str, loop_index: int = 0, recent_titles: list = None):
+    recent_text = ""
+    if recent_titles:
+        recent_text = "Évite les angles, formulations ou titres déjà utilisés récemment:\n" + \
+                      "\n".join(f"- {t}" for t in recent_titles)
+
     prompt = f"""
 Tu es un rédacteur SEO en 2025. Crée pour la catégorie suivante un SEUL titre
 percutant et “clickbait” en français (max 70 caractères), commençant par UN seul emoji.
 Puis une méta description unique (max 155 caractères).
 
 Catégorie: {category}
-C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie,
-donne un angle et un texte UNIQUE, différent des fois précédentes.
+C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie.
+{recent_text}
 
 Renvoie STRICTEMENT au format JSON:
 {{"title": "...", "meta": "..."}}
@@ -169,36 +186,49 @@ Exigences SEO & mise en forme:
         html = html[:-3]
     return html
 
+# ---------------- CATEGORY PICKING ----------------
+def pick_sequential_categories(history: dict, k: int) -> list:
+    today_key = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    posted_today = set(history.get("days", {}).get(today_key, []))
+    start_idx = history.get("cat_index", 0)
+    chosen = []
+
+    i = 0
+    while len(chosen) < k:
+        idx = (start_idx + i) % len(CATEGORIES)
+        cat = CATEGORIES[idx]
+        if cat not in posted_today:
+            chosen.append(cat)
+        i += 1
+        if i > len(CATEGORIES) * 2:  # safety break
+            break
+
+    history["cat_index"] = (start_idx + i) % len(CATEGORIES)
+    return chosen
+
 # ---------------- MAIN ----------------
 def main():
     today_utc = datetime.now(timezone.utc)
     today_key = today_utc.strftime("%Y-%m-%d")
 
     history = load_history(HISTORY_FILE)
-    if "days" not in history:
-        history["days"] = {}
-    if "cat_index" not in history:
-        history["cat_index"] = 0
-    if "category_loops" not in history:
-        history["category_loops"] = {}
+    history.setdefault("days", {})
+    history.setdefault("cat_index", 0)
+    history.setdefault("category_loops", {})
+    history.setdefault("recent_articles", {})
 
-    start_idx = history["cat_index"]
-    chosen = []
-    for i in range(ARTICLES_PER_DAY):
-        idx = (start_idx + i) % len(CATEGORIES)
-        chosen.append(CATEGORIES[idx])
-    history["cat_index"] = (start_idx + ARTICLES_PER_DAY) % len(CATEGORIES)
-
+    chosen = pick_sequential_categories(history, ARTICLES_PER_DAY)
     posted_today = []
 
     for category in chosen:
         loop_index = history["category_loops"].get(category, 0)
+        recent_titles = history["recent_articles"].get(category, [])[-7:]
 
-        title, meta = gen_punchy_title_and_meta(category, loop_index)
+        title, meta = gen_punchy_title_and_meta(category, loop_index, recent_titles)
         tries = 0
         while title_in_history(title, history) and tries < MAX_RETRIES_TITLE:
             tries += 1
-            title, meta = gen_punchy_title_and_meta(category, loop_index)
+            title, meta = gen_punchy_title_and_meta(category, loop_index, recent_titles)
         if title_in_history(title, history):
             print(f"[SKIP] Titre déjà utilisé pour '{category}': {title}")
             continue
@@ -208,7 +238,15 @@ def main():
         add_title_to_history(title, history)
         posted_today.append(category)
 
+        # update loop index
         history["category_loops"][category] = loop_index + 1
+
+        # update recent_articles
+        history.setdefault("recent_articles", {})
+        history.setdefault("recent_articles", {}).setdefault(category, [])
+        history["recent_articles"][category].append(title)
+        # keep last 7 articles
+        history["recent_articles"][category] = history["recent_articles"][category][-7:]
 
         print(f"[OK] Publié: {title} ({category}, loop {loop_index+1})")
 
