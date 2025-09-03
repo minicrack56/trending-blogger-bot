@@ -1,16 +1,6 @@
 {
-  "titles": [
-    "0e8847e561cd3b3758738783a06424af4411f428",
-    "aadfe001564e8657b6044bd3ff9c0e77b7c53f20",
-    "e094ed3aec8a923961ced49d2c0843a0c0e0abef",
-    "305dfdad42ac92395d482e0b06a40d091034d24e"
-  ],
-  "days": {
-    "2025-09-03": [
-      "Hacking Éthique & Sécurité",
-      "Bureautique et outils"
-    ]
-  },
+  "titles": [],
+  "days": {},
   "cat_index": 0,
   "category_loops": {},
   "recent_articles": {}
