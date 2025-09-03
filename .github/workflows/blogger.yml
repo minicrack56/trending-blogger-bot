@@ -13,11 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout automation-data branch
         uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
+          ref: automation-data   # <-- start directly on automation-data
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,31 +38,16 @@ jobs:
         run: |
           python main.py
 
-      - name: Commit history to automation branch
+      - name: Commit history update
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git fetch origin automation-data || true
-          if git ls-remote --exit-code origin automation-data; then
-              git checkout automation-data
-          else
-              git checkout -b automation-data
-          fi
-
-          # Stage and commit new history
           git add .data/blog_history.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
-            exit 0
+          else
+            git commit -m "chore: update blog history [skip ci]"
+            git pull --rebase --strategy-option=ours origin automation-data || true
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:automation-data
           fi
-
-          git commit -m "chore: update blog history [skip ci]"
-
-          # Rebase with "ours" strategy to always keep local .data/blog_history.json
-          git pull --rebase --strategy-option=ours origin automation-data || true
-
-          # Push changes
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} automation-data
-
-
