@@ -1,12 +1,18 @@
 {
   "titles": [
     "29f655071721e4a905d85769ceec0463f9cbb727",
-    "6ad140abc6d743685754ab85d986fbc2eb6040c5"
+    "6ad140abc6d743685754ab85d986fbc2eb6040c5",
+    "499f9b8ed871af23244ee2b9ac512e43300ab995",
+    "20229937c417ab2895d16c16aaf53af06f11b0b6"
   ],
   "days": {
     "2025-09-01": [
       "Bureautique et outils",
       "Programmation & Scripts de Sécurité"
+    ],
+    "2025-09-03": [
+      "Hacking Éthique & Sécurité",
+      "Bureautique et outils"
     ]
   }
 }
