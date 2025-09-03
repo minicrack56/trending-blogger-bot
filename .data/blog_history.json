@@ -24,5 +24,16 @@
       "Hacking Éthique & Sécurité",
       "Bureautique et outils"
     ]
+  },
+  "cat_index": 0,
+  "category_loops": {
+    "Bureautique et outils": 0,
+    "Programmation & Scripts de Sécurité": 0,
+    "Hacking Éthique & Sécurité": 0
+  },
+  "recent_articles": {
+    "Bureautique et outils": [],
+    "Programmation & Scripts de Sécurité": [],
+    "Hacking Éthique & Sécurité": []
   }
 }
