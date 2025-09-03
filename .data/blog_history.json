@@ -1,7 +1,67 @@
 {
-  "titles": [],
-  "days": {},
-  "cat_index": 0,
-  "category_loops": {},
-  "recent_articles": {}
+  "titles": [
+    "16f160d8c173ea699723dceccd74bf31cf3dbd3b",
+    "552b00548cda9e3ee15b83b106f6fc3200cb034e"
+  ],
+  "days": {
+    "2025-09-03": [
+      "Sécurité informatique et protection des données",
+      "Astuces et productivité"
+    ]
+  },
+  "cat_index": 2,
+  "category_loops": {
+    "Sécurité informatique et protection des données": 1,
+    "Astuces et productivité": 1,
+    "Maintenance et dépannage": 0,
+    "Programmation et développement": 0,
+    "Cloud, stockage et synchronisation": 0,
+    "Android et iOS – Astuces": 0,
+    "Bureautique et outils": 0,
+    "Création de contenu et multimédia": 0,
+    "Internet et navigation": 0,
+    "Cybersécurité avancée": 0,
+    "Technologie et projets DIY": 0,
+    "Outils et services en ligne": 0,
+    "Formation et apprentissage": 0,
+    "Hacking Éthique & Sécurité": 0,
+    "Programmation & Scripts de Sécurité": 0,
+    "OSINT (Open Source Intelligence)": 0,
+    "Pentesting Réseau": 0,
+    "Sécurité Web & Bypass": 0,
+    "Sécurité Mobile & Android": 0,
+    "Dark Web & Anonymat": 0,
+    "Cyberdéfense & Prévention": 0,
+    "Hacking Éthique Avancé": 0,
+    "Divers & Automatisation": 0
+  },
+  "recent_articles": {
+    "Sécurité informatique et protection des données": [
+      "🚨 Votre sécurité en ligne : l'erreur FATALE à éviter !"
+    ],
+    "Astuces et productivité": [
+      "🚀 Débloquez votre potentiel: Astuces productivité inédites 2025."
+    ],
+    "Maintenance et dépannage": [],
+    "Programmation et développement": [],
+    "Cloud, stockage et synchronisation": [],
+    "Android et iOS – Astuces": [],
+    "Bureautique et outils": [],
+    "Création de contenu et multimédia": [],
+    "Internet et navigation": [],
+    "Cybersécurité avancée": [],
+    "Technologie et projets DIY": [],
+    "Outils et services en ligne": [],
+    "Formation et apprentissage": [],
+    "Hacking Éthique & Sécurité": [],
+    "Programmation & Scripts de Sécurité": [],
+    "OSINT (Open Source Intelligence)": [],
+    "Pentesting Réseau": [],
+    "Sécurité Web & Bypass": [],
+    "Sécurité Mobile & Android": [],
+    "Dark Web & Anonymat": [],
+    "Cyberdéfense & Prévention": [],
+    "Hacking Éthique Avancé": [],
+    "Divers & Automatisation": []
+  }
 }
