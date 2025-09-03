@@ -42,21 +42,28 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Fetch latest automation-data branch if it exists
-          git fetch origin automation-data || true
-          if git ls-remote --exit-code origin automation-data; then
-              git checkout automation-data
-              git pull --rebase origin automation-data || true
-          else
-              git checkout -b automation-data
-          fi
+          # Make sure we are on a working branch
+          git checkout -b temp-branch
 
-          # Add history file
+          # Stage history changes
           git add .data/blog_history.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "chore: update blog history [skip ci]"
+
+            # Fetch and rebase automation-data
+            git fetch origin automation-data || true
+            if git ls-remote --exit-code origin automation-data; then
+              git checkout automation-data
+              git pull --rebase origin automation-data
+              git cherry-pick temp-branch
+            else
+              git checkout -b automation-data
+              git cherry-pick temp-branch
+            fi
+
+            # Push final branch
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} automation-data
           fi
