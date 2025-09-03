@@ -68,23 +68,40 @@ def ensure_history_path(path: str):
 def load_history(path: str):
     ensure_history_path(path)
     if not os.path.exists(path):
-        return {
+        history = {
             "titles": [],
             "days": {},
             "cat_index": 0,
             "category_loops": {},
             "recent_articles": {}
         }
+        return history
     try:
-        return json.load(open(path, "r", encoding="utf-8"))
+        history = json.load(open(path, "r", encoding="utf-8"))
     except Exception:
-        return {
+        history = {
             "titles": [],
             "days": {},
             "cat_index": 0,
             "category_loops": {},
             "recent_articles": {}
         }
+
+    # --- AUTO-INITIALIZE MISSING FIELDS ---
+    history.setdefault("titles", [])
+    history.setdefault("days", {})
+    history.setdefault("cat_index", 0)
+    history.setdefault("category_loops", {})
+    history.setdefault("recent_articles", {})
+
+    # --- ENSURE ALL CATEGORIES HAVE entries ---
+    for cat in CATEGORIES:
+        if cat not in history["category_loops"]:
+            history["category_loops"][cat] = 0
+        if cat not in history["recent_articles"]:
+            history["recent_articles"][cat] = []
+
+    return history
 
 def save_history(path: str, data: dict):
     ensure_history_path(path)
