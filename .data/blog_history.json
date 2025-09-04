@@ -1,20 +1,26 @@
 {
   "titles": [
     "16f160d8c173ea699723dceccd74bf31cf3dbd3b",
-    "552b00548cda9e3ee15b83b106f6fc3200cb034e"
+    "552b00548cda9e3ee15b83b106f6fc3200cb034e",
+    "d38d5c2db7a4096d86e2148605fa2c92a95e547e",
+    "5dec854788167d3fb1e1b2e0d34ba96173f367e3"
   ],
   "days": {
     "2025-09-03": [
       "Sécurité informatique et protection des données",
       "Astuces et productivité"
+    ],
+    "2025-09-04": [
+      "Maintenance et dépannage",
+      "Programmation et développement"
     ]
   },
-  "cat_index": 2,
+  "cat_index": 4,
   "category_loops": {
     "Sécurité informatique et protection des données": 1,
     "Astuces et productivité": 1,
-    "Maintenance et dépannage": 0,
-    "Programmation et développement": 0,
+    "Maintenance et dépannage": 1,
+    "Programmation et développement": 1,
     "Cloud, stockage et synchronisation": 0,
     "Android et iOS – Astuces": 0,
     "Bureautique et outils": 0,
@@ -42,8 +48,12 @@
     "Astuces et productivité": [
       "🚀 Débloquez votre potentiel: Astuces productivité inédites 2025."
     ],
-    "Maintenance et dépannage": [],
-    "Programmation et développement": [],
+    "Maintenance et dépannage": [
+      "💰 Panne imprévue? Réparez-la vous-même et économisez gros!"
+    ],
+    "Programmation et développement": [
+      "🚀 Le Futur du Code est LÀ ! Maîtrisez le Développement 2025"
+    ],
     "Cloud, stockage et synchronisation": [],
     "Android et iOS – Astuces": [],
     "Bureautique et outils": [],
