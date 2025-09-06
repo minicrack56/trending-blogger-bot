@@ -5,7 +5,9 @@
     "d38d5c2db7a4096d86e2148605fa2c92a95e547e",
     "5dec854788167d3fb1e1b2e0d34ba96173f367e3",
     "c453ee6fe4771899685fba80d1fb633442755111",
-    "d353909fe1da93930b57da6094102f72b45cb7e2"
+    "d353909fe1da93930b57da6094102f72b45cb7e2",
+    "f0ff172065794bc880b8bd0a2bfdbd81eded0c14",
+    "1fab3a6cc29ea1e2ba9c12e26996e3c14b7d5ec5"
   ],
   "days": {
     "2025-09-03": [
@@ -19,9 +21,13 @@
     "2025-09-05": [
       "Cloud, stockage et synchronisation",
       "Android et iOS – Astuces"
+    ],
+    "2025-09-06": [
+      "Bureautique et outils",
+      "Création de contenu et multimédia"
     ]
   },
-  "cat_index": 6,
+  "cat_index": 8,
   "category_loops": {
     "Sécurité informatique et protection des données": 1,
     "Astuces et productivité": 1,
@@ -29,8 +35,8 @@
     "Programmation et développement": 1,
     "Cloud, stockage et synchronisation": 1,
     "Android et iOS – Astuces": 1,
-    "Bureautique et outils": 0,
-    "Création de contenu et multimédia": 0,
+    "Bureautique et outils": 1,
+    "Création de contenu et multimédia": 1,
     "Internet et navigation": 0,
     "Cybersécurité avancée": 0,
     "Technologie et projets DIY": 0,
@@ -66,8 +72,12 @@
     "Android et iOS – Astuces": [
       "🤯 Android & iOS: Découvrez les astuces CHOC que VOUS ignorez !"
     ],
-    "Bureautique et outils": [],
-    "Création de contenu et multimédia": [],
+    "Bureautique et outils": [
+      "💡 L'outil secret que TOUS les pros de la bureautique utilisent"
+    ],
+    "Création de contenu et multimédia": [
+      "🚀 Création de Contenu: Vos Médias 2025 Vont EXPLOSER!"
+    ],
     "Internet et navigation": [],
     "Cybersécurité avancée": [],
     "Technologie et projets DIY": [],
