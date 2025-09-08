@@ -9,7 +9,9 @@
     "f0ff172065794bc880b8bd0a2bfdbd81eded0c14",
     "1fab3a6cc29ea1e2ba9c12e26996e3c14b7d5ec5",
     "3f1ee91541a6470c9dfd64ab91077e0fc8ee2f17",
-    "9b7ff5ffe039e02125a4521607b6a76284f08376"
+    "9b7ff5ffe039e02125a4521607b6a76284f08376",
+    "abcedf408b0b11adc3740b01993ab806db10a668",
+    "40b2d2029e0ba12d693ee73fb97833c4c3854f96"
   ],
   "days": {
     "2025-09-03": [
@@ -31,9 +33,13 @@
     "2025-09-07": [
       "Internet et navigation",
       "Cybersécurité avancée"
+    ],
+    "2025-09-08": [
+      "Technologie et projets DIY",
+      "Outils et services en ligne"
     ]
   },
-  "cat_index": 10,
+  "cat_index": 12,
   "category_loops": {
     "Sécurité informatique et protection des données": 1,
     "Astuces et productivité": 1,
@@ -45,8 +51,8 @@
     "Création de contenu et multimédia": 1,
     "Internet et navigation": 1,
     "Cybersécurité avancée": 1,
-    "Technologie et projets DIY": 0,
-    "Outils et services en ligne": 0,
+    "Technologie et projets DIY": 1,
+    "Outils et services en ligne": 1,
     "Formation et apprentissage": 0,
     "Hacking Éthique & Sécurité": 0,
     "Programmation & Scripts de Sécurité": 0,
@@ -90,8 +96,12 @@
     "Cybersécurité avancée": [
       "⚠️ Cybersécurité Avancée : Votre Guide Ultime Anti-Pirates 2025 !"
     ],
-    "Technologie et projets DIY": [],
-    "Outils et services en ligne": [],
+    "Technologie et projets DIY": [
+      "🤯 Projets Tech DIY : Le futur est entre vos mains, découvrez comment !"
+    ],
+    "Outils et services en ligne": [
+      "🚀 Le Secret Révélé: Outils & Services En Ligne Indispensables!"
+    ],
     "Formation et apprentissage": [],
     "Hacking Éthique & Sécurité": [],
     "Programmation & Scripts de Sécurité": [],
