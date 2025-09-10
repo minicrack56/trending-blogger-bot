@@ -13,7 +13,9 @@
     "abcedf408b0b11adc3740b01993ab806db10a668",
     "40b2d2029e0ba12d693ee73fb97833c4c3854f96",
     "20f438025d05c99b11d8ae363f79c4eaa10cee56",
-    "db607e85c3db2365f33035b40779caf524418594"
+    "db607e85c3db2365f33035b40779caf524418594",
+    "8cd779713187f210045d7176952c92b2120d5159",
+    "693082f244923bf57fd36953c9a047d9f5c3efe8"
   ],
   "days": {
     "2025-09-03": [
@@ -43,9 +45,13 @@
     "2025-09-09": [
       "Formation et apprentissage",
       "Hacking Éthique & Sécurité"
+    ],
+    "2025-09-10": [
+      "Programmation & Scripts de Sécurité",
+      "OSINT (Open Source Intelligence)"
     ]
   },
-  "cat_index": 14,
+  "cat_index": 16,
   "category_loops": {
     "Sécurité informatique et protection des données": 1,
     "Astuces et productivité": 1,
@@ -61,8 +67,8 @@
     "Outils et services en ligne": 1,
     "Formation et apprentissage": 1,
     "Hacking Éthique & Sécurité": 1,
-    "Programmation & Scripts de Sécurité": 0,
-    "OSINT (Open Source Intelligence)": 0,
+    "Programmation & Scripts de Sécurité": 1,
+    "OSINT (Open Source Intelligence)": 1,
     "Pentesting Réseau": 0,
     "Sécurité Web & Bypass": 0,
     "Sécurité Mobile & Android": 0,
@@ -114,8 +120,12 @@
     "Hacking Éthique & Sécurité": [
       "🚨 Hacking Éthique : Les Secrets que Vous Devez Connaître pour VOS Données !"
     ],
-    "Programmation & Scripts de Sécurité": [],
-    "OSINT (Open Source Intelligence)": [],
+    "Programmation & Scripts de Sécurité": [
+      "🚨 Sécurité Cyber: Codez Votre Arme Anti-Hacks Ultime!"
+    ],
+    "OSINT (Open Source Intelligence)": [
+      "🤯 OSINT: Révélez les secrets du web que personne ne voit !"
+    ],
     "Pentesting Réseau": [],
     "Sécurité Web & Bypass": [],
     "Sécurité Mobile & Android": [],
