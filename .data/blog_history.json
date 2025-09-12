@@ -17,7 +17,9 @@
     "8cd779713187f210045d7176952c92b2120d5159",
     "693082f244923bf57fd36953c9a047d9f5c3efe8",
     "a755ee16f5346968b6692f25c75d594d53bb4da8",
-    "bb878b0a9735df73fc1447ac3bf80fba248bf8ad"
+    "bb878b0a9735df73fc1447ac3bf80fba248bf8ad",
+    "0d8307ee821155acaf11cff2f18acc94b1c6d09a",
+    "89aba9beebe95cc905cbdc1b1e99eb520e6f923f"
   ],
   "days": {
     "2025-09-03": [
@@ -55,9 +57,13 @@
     "2025-09-11": [
       "Pentesting Réseau",
       "Sécurité Web & Bypass"
+    ],
+    "2025-09-12": [
+      "Sécurité Mobile & Android",
+      "Dark Web & Anonymat"
     ]
   },
-  "cat_index": 18,
+  "cat_index": 20,
   "category_loops": {
     "Sécurité informatique et protection des données": 1,
     "Astuces et productivité": 1,
@@ -77,8 +83,8 @@
     "OSINT (Open Source Intelligence)": 1,
     "Pentesting Réseau": 1,
     "Sécurité Web & Bypass": 1,
-    "Sécurité Mobile & Android": 0,
-    "Dark Web & Anonymat": 0,
+    "Sécurité Mobile & Android": 1,
+    "Dark Web & Anonymat": 1,
     "Cyberdéfense & Prévention": 0,
     "Hacking Éthique Avancé": 0,
     "Divers & Automatisation": 0
@@ -138,8 +144,12 @@
     "Sécurité Web & Bypass": [
       "⚠️ Alerte Sécurité Web : Maîtrisez le Bypass avant qu'il ne soit trop tard !"
     ],
-    "Sécurité Mobile & Android": [],
-    "Dark Web & Anonymat": [],
+    "Sécurité Mobile & Android": [
+      "🤫 Sécurité Android: Ce que 99% des utilisateurs ignorent"
+    ],
+    "Dark Web & Anonymat": [
+      "🤫 Dark Web : Le secret de l'anonymat total enfin révélé !"
+    ],
     "Cyberdéfense & Prévention": [],
     "Hacking Éthique Avancé": [],
     "Divers & Automatisation": []
