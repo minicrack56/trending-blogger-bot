@@ -21,7 +21,9 @@
     "0d8307ee821155acaf11cff2f18acc94b1c6d09a",
     "89aba9beebe95cc905cbdc1b1e99eb520e6f923f",
     "37e763df1d637b035a43a830c185c45b9c365c09",
-    "f6f8b6c08fd5bdb107da1c9512f64eacc75074c4"
+    "f6f8b6c08fd5bdb107da1c9512f64eacc75074c4",
+    "c5ef8acac7f8e523bd28d283f4655f65dcc61188",
+    "5e441afd215529633af3ea83cfa3e07fd479146b"
   ],
   "days": {
     "2025-09-03": [
@@ -67,11 +69,15 @@
     "2025-09-13": [
       "Cyberdéfense & Prévention",
       "Hacking Éthique Avancé"
+    ],
+    "2025-09-14": [
+      "Divers & Automatisation",
+      "Sécurité informatique et protection des données"
     ]
   },
-  "cat_index": 22,
+  "cat_index": 1,
   "category_loops": {
-    "Sécurité informatique et protection des données": 1,
+    "Sécurité informatique et protection des données": 2,
     "Astuces et productivité": 1,
     "Maintenance et dépannage": 1,
     "Programmation et développement": 1,
@@ -93,11 +99,12 @@
     "Dark Web & Anonymat": 1,
     "Cyberdéfense & Prévention": 1,
     "Hacking Éthique Avancé": 1,
-    "Divers & Automatisation": 0
+    "Divers & Automatisation": 1
   },
   "recent_articles": {
     "Sécurité informatique et protection des données": [
-      "🚨 Votre sécurité en ligne : l'erreur FATALE à éviter !"
+      "🚨 Votre sécurité en ligne : l'erreur FATALE à éviter !",
+      "😈 Le piège des hackers : protégez vos données AVANT qu'il soit trop tard"
     ],
     "Astuces et productivité": [
       "🚀 Débloquez votre potentiel: Astuces productivité inédites 2025."
@@ -162,6 +169,8 @@
     "Hacking Éthique Avancé": [
       "😈 Hacking Éthique Avancé : Maîtrisez les Secrets du Pro !"
     ],
-    "Divers & Automatisation": []
+    "Divers & Automatisation": [
+      "🤯 Divers & Auto: Révolutionnez Votre Quotidien Facilement!"
+    ]
   }
 }
