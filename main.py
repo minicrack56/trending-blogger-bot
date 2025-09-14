@@ -105,7 +105,7 @@ CATEGORIES = [
     "PROGRAMMATION ET DÉVELOPPEMENT - Faire une calculatrice simple en Python",
     "PROGRAMMATION ET DÉVELOPPEMENT - Développer un formulaire de contact en HTML/PHP",
     "PROGRAMMATION ET DÉVELOPPEMENT - Créer un bouton animé en CSS",
-    "PROGRAMMATION ET DÉVELOPPEMENT - Comprendre l’algorithme “Si… Alors…"",
+    "PROGRAMMATION ET DÉVELOPPEMENT - Comprendre l’algorithme",
     "PROGRAMMATION ET DÉVELOPPEMENT - Utiliser ChatGPT pour générer du code",
     "PROGRAMMATION ET DÉVELOPPEMENT - Introduction aux bases de données MySQL",
     "PROGRAMMATION ET DÉVELOPPEMENT - Créer un mini-jeu avec Scratch",
