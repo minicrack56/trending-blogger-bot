@@ -765,6 +765,90 @@ CATEGORIES = [
     "WEB3 - Sécuriser son portefeuille Web3",
     "WEB3 - Gaming et NFT",
     "WEB3 - Futur du Web décentralisé",
+
+    # CYBERSÉCURITÉ AVANCÉE
+"CYBERSEC - Pentesting avancé avec Metasploit",
+"CYBERSEC - Exploitation de vulnérabilités web",
+"CYBERSEC - Attaques et défense réseau",
+"CYBERSEC - Sécuriser les serveurs Linux",
+"CYBERSEC - Analyse forensique d’un incident",
+"CYBERSEC - Détection et mitigation DDoS",
+"CYBERSEC - Reverse engineering de malware",
+"CYBERSEC - Sécurité des applications mobiles",
+"CYBERSEC - Hacking de protocoles IoT",
+"CYBERSEC - Bug bounty et rapport de vulnérabilité",
+
+# CLOUD & INFRASTRUCTURE
+"CLOUD - Introduction à AWS, Azure, GCP",
+"CLOUD - Sécuriser un serveur cloud",
+"CLOUD - Déploiement d’application scalable",
+"CLOUD - Infrastructure as Code avec Terraform",
+"CLOUD - Monitoring et logging cloud",
+"CLOUD - Conteneurisation avec Docker",
+"CLOUD - Orchestration avec Kubernetes",
+"CLOUD - Sauvegarde et reprise après sinistre",
+"CLOUD - Réseaux virtuels et VPN",
+"CLOUD - Automatisation des tâches cloud",
+
+# DATA SCIENCE & ANALYTICS
+"DATA - Introduction au Data Science",
+"DATA - Nettoyage et préparation de données",
+"DATA - Visualisation de données avec Python",
+"DATA - Analyse statistique avancée",
+"DATA - Machine Learning pour prédictions",
+"DATA - NLP et traitement du langage",
+"DATA - Big Data et Spark",
+"DATA - Analyse de séries temporelles",
+"DATA - Détection d’anomalies",
+"DATA - Déploiement de modèles ML en production",
+
+# DÉVELOPPEMENT WEB & MOBILE
+"WEB - HTML et CSS pour débutants",
+"WEB - JavaScript avancé",
+"WEB - Frameworks front-end (React, Vue, Angular)",
+"WEB - Développement back-end avec Node.js",
+"WEB - Sécuriser une application web",
+"WEB - API REST et GraphQL",
+"WEB - Déploiement web sécurisé",
+"WEB - Applications mobiles avec Flutter",
+"WEB - Optimisation performance web",
+"WEB - Progressive Web Apps (PWA)",
+
+# RÉSEAUX & TELECOM
+"NETWORK - Concepts TCP/IP et modèles OSI",
+"NETWORK - Sécuriser un réseau WiFi",
+"NETWORK - VPN et chiffrement réseau",
+"NETWORK - Analyse de trafic avec Wireshark",
+"NETWORK - Routage et switching avancé",
+"NETWORK - Détection d’intrusion IDS/IPS",
+"NETWORK - Protocoles réseau sécurisés",
+"NETWORK - Monitoring réseau avec Nagios",
+"NETWORK - Troubleshooting réseau",
+"NETWORK - Réseaux privés et segmentation",
+
+# PRIVACY & PROTECTION DES DONNÉES
+"PRIVACY - Gestion des mots de passe sécurisés",
+"PRIVACY - Chiffrement des emails",
+"PRIVACY - VPN et proxy avancé",
+"PRIVACY - Anonymisation des données",
+"PRIVACY - Sécuriser ses communications en ligne",
+"PRIVACY - Vie privée sur les réseaux sociaux",
+"PRIVACY - Protection contre le tracking web",
+"PRIVACY - Sécurité des appareils mobiles",
+"PRIVACY - Stockage sécurisé des données",
+"PRIVACY - Audit de confidentialité personnel",
+
+# BIOTECH & SCIENCES
+"BIOTECH - Introduction à la biotechnologie",
+"BIOTECH - Édition génétique CRISPR",
+"BIOTECH - Bioinformatique pour débutants",
+"BIOTECH - Sécurité et éthique en biotech",
+"BIOTECH - Capteurs biomédicaux connectés",
+"BIOTECH - Analyse de séquences ADN",
+"BIOTECH - Modélisation biologique",
+"BIOTECH - Robotique et biotechnologie",
+"BIOTECH - Nanobiotechnologies",
+"BIOTECH - Intelligence artificielle appliquée à la santé",
 ]
 
 # ---------------- HISTORY HANDLING ----------------
