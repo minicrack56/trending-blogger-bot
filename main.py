@@ -933,7 +933,7 @@ def gen_punchy_title_and_meta(category: str, loop_index: int = 0, recent_titles:
     prompt = f"""
 Tu es un rédacteur SEO en 2025. Crée pour la catégorie suivante un SEUL titre
 percutant et “clickbait” en français (max 70 caractères), commençant par UN seul emoji.
-Puis une méta description unique, fait en sorte qu'il ne deborde pas (max 150 caractères).
+Puis une méta description unique, fait en sorte qu'il ne depasse pas (max 150 caractères) et que se soit toujour une phrase complète.
 
 Catégorie: {category}
 C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie.
