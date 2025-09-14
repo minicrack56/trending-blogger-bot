@@ -138,7 +138,7 @@ CATEGORIES = [
     "ANDROID ET IOS – ASTUCES - Programmer l’envoi d’un SMS sur Android",
     "ANDROID ET IOS – ASTUCES - Utiliser le mode économie d’énergie sur iOS",
     "ANDROID ET IOS – ASTUCES - Mettre à jour manuellement Android",
-    "ANDROID ET IOS – ASTUCES - Retrouver un iPhone perdu avec “Localiser mon iPhone”",
+    "ANDROID ET IOS – ASTUCES - Retrouver un iPhone perdu avec Localiser mon iPhone",
     "ANDROID ET IOS – ASTUCES - Cloner l’écran de son téléphone sur une TV",
     "ANDROID ET IOS – ASTUCES - Désactiver les applications en arrière-plan pour économiser la batterie",
     "ANDROID ET IOS – ASTUCES - Utiliser Google Assistant efficacement",
