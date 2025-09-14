@@ -933,7 +933,7 @@ def gen_punchy_title_and_meta(category: str, loop_index: int = 0, recent_titles:
     prompt = f"""
 Tu es un rédacteur SEO en 2025. Crée pour la catégorie suivante un SEUL titre
 percutant et “clickbait” en français (max 70 caractères), commençant par UN seul emoji.
-Puis une méta description unique (max 300 caractères).
+Puis une méta description unique, fait en sorte qu'il ne deborde pas (max 150 caractères).
 
 Catégorie: {category}
 C'est la {loop_index+1}ᵉ fois que nous écrivons sur cette catégorie.
@@ -951,7 +951,7 @@ Renvoie STRICTEMENT au format JSON:
     try:
         data = pyjson.loads(m.group(0))
         title = data.get("title","").strip().strip('"')
-        meta  = data.get("meta","").strip()[:300]
+        meta  = data.get("meta","").strip()[:150]
         if not title:
             title = "✨ " + category.split("–")[0].strip()
         return title, meta
@@ -977,13 +977,14 @@ Exigences SEO & mise en forme:
 - Structure: H2 (sections), H3 (sous-sections)
 - Laisse une LIGNE BLANCHE entre chaque titre et chaque paragraphe
 - Utilise des listes à puces (ul/li) quand pertinent
-- Mets en valeur en gras, italic, mono les mots importants aussi avec <strong>, <em>, et du monospace <code> pour commandes/extraits
+- Mets en valeur en gras, italic, mono les mots importants/clés aussi avec <strong>, <em>, et du monospace <code> pour commandes/extraits
 - Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span> (modéré)
 - Ajoute 1–2 encadrés “conseil/alerte” avec <blockquote class="tip"> et <blockquote class="warning"> 
 - Ajoute un CTA final (inscription newsletter / partage / commentaire)
 - Pas d’images externes dans cet article
 - Pas d’auto-promo, pas de répétition inutile
 - Français naturel, ton professionnel et pédagogique
+- Revérifie toujour chaque article avant de poster.
 """
     model = genai.GenerativeModel(MODEL)
     html = model.generate_content(prompt).text.strip()
