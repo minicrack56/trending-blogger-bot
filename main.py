@@ -980,7 +980,6 @@ Exigences SEO & mise en forme:
 - Mets en valeur avec <strong>, <em>, et du monospace <code> pour commandes/extraits
 - Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span> (modéré)
 - Ajoute 1–2 encadrés “conseil/alerte” avec <blockquote class="tip"> et <blockquote class="warning"> 
-- Inclure 1 court extrait de code pertinent (3–8 lignes) si la catégorie s’y prête (entre balises <pre><code>)
 - Ajoute un CTA final (inscription newsletter / partage / commentaire)
 - Pas d’images externes dans cet article
 - Pas d’auto-promo, pas de répétition inutile
