@@ -960,7 +960,7 @@ Renvoie STRICTEMENT au format JSON:
 
 def gen_full_article_html(category: str, title: str, meta_desc: str, loop_index: int = 0):
     prompt = f"""
-Rédige un article de blog en FRANÇAIS pour Blogger (HTML uniquement, sans <html> ni <body>).
+Rédige un article bien structuré de blog en FRANÇAIS pour Blogger compatible avec l'éditeur de Blogger (HTML uniquement, sans <html> ni <body>).
 
 Contexte:
 - Catégorie: {category}
@@ -977,14 +977,15 @@ Exigences SEO & mise en forme:
 - Structure: H2 (sections), H3 (sous-sections)
 - Laisse une LIGNE BLANCHE entre chaque titre et chaque paragraphe
 - Utilise des listes à puces (ul/li) quand pertinent
-- Mets en valeur en gras, italic, mono les mots importants/clés aussi avec <strong>, <em>, et du monospace <code> pour commandes/extraits
-- Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span> (modéré)
+- Mets en valeur les mots importants/clés avec <strong>, <em>, et du monospace <code> pour commandes/extraits
+- pas de *mot* ni de code Markdown
+- Ajoute quelques touches de couleur pertinentes via <span style="color:#2363eb">…</span>
 - Ajoute 1–2 encadrés “conseil/alerte” avec <blockquote class="tip"> et <blockquote class="warning"> 
 - Ajoute un CTA final (inscription newsletter / partage / commentaire)
 - Pas d’images externes dans cet article
 - Pas d’auto-promo, pas de répétition inutile
 - Français naturel, ton professionnel et pédagogique
-- Revérifie toujour chaque article avant de poster.
+- Vérifie toujour que chaque article respect la structure SEO
 """
     model = genai.GenerativeModel(MODEL)
     html = model.generate_content(prompt).text.strip()
