@@ -7,15 +7,21 @@
     "e33e6ab32595f623a43495c9c8ee0bf998d6bab2",
     "d2ff0d1ad27e555af7fe1c341f8910ddc31cfe74",
     "e48cacd05e805044846ad5af27b9da914f9c8dab",
-    "58a274b6657e98719229c16aa02f6b56f476b3d2"
+    "58a274b6657e98719229c16aa02f6b56f476b3d2",
+    "8329bc0e5504fb6676d2952d3433e40d94e5ab38",
+    "de4e0dda2a332afe3ddcd6cb028b90608539bad7"
   ],
   "days": {
     "2025-09-14": [
       "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Activer la vérification en deux étapes sur Gmail",
       "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Bloquer la publicité intrusive sur son smartphone"
+    ],
+    "2025-09-15": [
+      "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sauvegarder ses données pour éviter les pertes",
+      "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Protéger ses photos avec un mot de passe sur iOS et Android"
     ]
   },
-  "cat_index": 8,
+  "cat_index": 10,
   "category_loops": {
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment protéger un compte Facebook contre le piratage": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître et éviter les fausses pages Facebook (phishing)": 1,
@@ -25,8 +31,8 @@
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment chiffrer ses messages avec Signal ou WhatsApp": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Activer la vérification en deux étapes sur Gmail": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Bloquer la publicité intrusive sur son smartphone": 1,
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sauvegarder ses données pour éviter les pertes": 0,
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Protéger ses photos avec un mot de passe sur iOS et Android": 0,
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sauvegarder ses données pour éviter les pertes": 1,
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Protéger ses photos avec un mot de passe sur iOS et Android": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Éviter les virus en naviguant sur Internet": 0,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser un réseau Wi-Fi domestique": 0,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître un site frauduleux (.onion et dark web)": 0,
@@ -771,8 +777,12 @@
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Bloquer la publicité intrusive sur son smartphone": [
       "🤫 Le hack anti-pubs que tout smartphone DOIT avoir en 2025 !"
     ],
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sauvegarder ses données pour éviter les pertes": [],
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Protéger ses photos avec un mot de passe sur iOS et Android": [],
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sauvegarder ses données pour éviter les pertes": [
+      "💾 Sauvegarde : Évitez la CATASTROPHE ! Protégez vos données VITALES."
+    ],
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Protéger ses photos avec un mot de passe sur iOS et Android": [
+      "🔒 Photos sensibles ? Cachez-les en 2 min sur iOS & Android !"
+    ],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Éviter les virus en naviguant sur Internet": [],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser un réseau Wi-Fi domestique": [],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître un site frauduleux (.onion et dark web)": [],
