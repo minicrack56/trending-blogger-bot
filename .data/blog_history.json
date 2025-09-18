@@ -13,7 +13,9 @@
     "67651efce387323a4d5742e76bb9e92c2fedbf00",
     "da032fbaf12109acd0c23a672d40f6f468166297",
     "9ef48480483cc1366e8d2e490d17683fe743ae05",
-    "9fefda842d5c88e9bf0f278aa7a72422fd81df18"
+    "9fefda842d5c88e9bf0f278aa7a72422fd81df18",
+    "57b4bcd49f1d1ead8da8798ad239ad8ce9965e5f",
+    "69265201b527f2419e9438551a1c28b80c096227"
   ],
   "days": {
     "2025-09-14": [
@@ -31,9 +33,13 @@
     "2025-09-17": [
       "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître un site frauduleux (.onion et dark web)",
       "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Supprimer un virus de son PC avec Windows Defender"
+    ],
+    "2025-09-18": [
+      "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser sa clé USB contre les infections",
+      "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment repérer un compte WhatsApp frauduleux"
     ]
   },
-  "cat_index": 14,
+  "cat_index": 16,
   "category_loops": {
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment protéger un compte Facebook contre le piratage": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître et éviter les fausses pages Facebook (phishing)": 1,
@@ -49,8 +55,8 @@
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser un réseau Wi-Fi domestique": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître un site frauduleux (.onion et dark web)": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Supprimer un virus de son PC avec Windows Defender": 1,
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser sa clé USB contre les infections": 0,
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment repérer un compte WhatsApp frauduleux": 0,
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser sa clé USB contre les infections": 1,
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment repérer un compte WhatsApp frauduleux": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Supprimer un logiciel malveillant de son téléphone": 0,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment détecter un malware sur Android": 0,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Gérer ses mots de passe avec un gestionnaire sécurisé": 0,
@@ -807,8 +813,12 @@
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Supprimer un virus de son PC avec Windows Defender": [
       "🚨 Virus PC ? N'effacez RIEN ! Windows Defender le supprime... facile."
     ],
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser sa clé USB contre les infections": [],
-    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment repérer un compte WhatsApp frauduleux": [],
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Sécuriser sa clé USB contre les infections": [
+      "🛡️ Votre clé USB à l'abri des virus ? Le secret enfin révélé !"
+    ],
+    "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment repérer un compte WhatsApp frauduleux": [
+      "🔒 WhatsApp: Le secret pour repérer les faux comptes avant l'arnaque"
+    ],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Supprimer un logiciel malveillant de son téléphone": [],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment détecter un malware sur Android": [],
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Gérer ses mots de passe avec un gestionnaire sécurisé": [],
