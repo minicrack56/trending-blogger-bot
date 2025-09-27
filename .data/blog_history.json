@@ -29,7 +29,9 @@
     "bab2e4c8e0943969d4f82515ce6ae50814ffc9e0",
     "7d04d1dfdbcab0c9cabc4fc6fb2f448f298d3930",
     "59b21492cc2f8c9a918c3f7f9d00ab1d028e2e50",
-    "cb4ab520abea14e49399d867b880a73eba757ee1"
+    "cb4ab520abea14e49399d867b880a73eba757ee1",
+    "712f90503b35c85f0b079305b9db0057363fa804",
+    "95cb9b11508495d7caef9c4b3519bb8f6d1ce340"
   ],
   "days": {
     "2025-09-14": [
@@ -79,9 +81,13 @@
     "2025-09-26": [
       "ASTUCES ET PRODUCTIVITÉ - Compresser des images sans perte de qualité",
       "ASTUCES ET PRODUCTIVITÉ - Créer une adresse email temporaire"
+    ],
+    "2025-09-27": [
+      "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC",
+      "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF"
     ]
   },
-  "cat_index": 30,
+  "cat_index": 32,
   "category_loops": {
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment protéger un compte Facebook contre le piratage": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître et éviter les fausses pages Facebook (phishing)": 1,
@@ -113,8 +119,8 @@
     "ASTUCES ET PRODUCTIVITÉ - Masquer un fichier sur Android sans application": 1,
     "ASTUCES ET PRODUCTIVITÉ - Compresser des images sans perte de qualité": 1,
     "ASTUCES ET PRODUCTIVITÉ - Créer une adresse email temporaire": 1,
-    "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC": 0,
-    "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": 0,
+    "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC": 1,
+    "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": 1,
     "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": 0,
     "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": 0,
     "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens": 0,
@@ -903,8 +909,12 @@
     "ASTUCES ET PRODUCTIVITÉ - Créer une adresse email temporaire": [
       "🚫 Stop le spam ! Créez un email temporaire en 2 clics."
     ],
-    "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC": [],
-    "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": [],
+    "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC": [
+      "🤯 Photos iCloud sur PC: LA méthode SECRÈTE que personne ne connaît!"
+    ],
+    "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": [
+      "🚀 Page web en PDF : Le secret de l'efficacité enfin révélé !"
+    ],
     "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": [],
     "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": [],
     "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens": [],
