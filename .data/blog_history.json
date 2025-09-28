@@ -31,7 +31,9 @@
     "59b21492cc2f8c9a918c3f7f9d00ab1d028e2e50",
     "cb4ab520abea14e49399d867b880a73eba757ee1",
     "712f90503b35c85f0b079305b9db0057363fa804",
-    "95cb9b11508495d7caef9c4b3519bb8f6d1ce340"
+    "95cb9b11508495d7caef9c4b3519bb8f6d1ce340",
+    "435a21f079128ca884ee1ed94e4c71dc7b62fdba",
+    "65ecb335afd525a646f8035fc5f507135129c77b"
   ],
   "days": {
     "2025-09-14": [
@@ -85,9 +87,13 @@
     "2025-09-27": [
       "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC",
       "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF"
+    ],
+    "2025-09-28": [
+      "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides",
+      "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC"
     ]
   },
-  "cat_index": 32,
+  "cat_index": 34,
   "category_loops": {
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment protéger un compte Facebook contre le piratage": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître et éviter les fausses pages Facebook (phishing)": 1,
@@ -121,8 +127,8 @@
     "ASTUCES ET PRODUCTIVITÉ - Créer une adresse email temporaire": 1,
     "ASTUCES ET PRODUCTIVITÉ - Télécharger ses photos iCloud sur PC": 1,
     "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": 1,
-    "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": 0,
-    "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": 0,
+    "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": 1,
+    "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": 1,
     "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens": 0,
     "ASTUCES ET PRODUCTIVITÉ - Scanner un document avec son smartphone": 0,
     "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": 0,
@@ -915,8 +921,12 @@
     "ASTUCES ET PRODUCTIVITÉ - Convertir une page web en fichier PDF": [
       "🚀 Page web en PDF : Le secret de l'efficacité enfin révélé !"
     ],
-    "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": [],
-    "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": [],
+    "ASTUCES ET PRODUCTIVITÉ - Utiliser Google Keep pour prendre des notes rapides": [
+      "💡 Arrêtez tout ! Maîtrisez Google Keep en 5 min chrono."
+    ],
+    "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": [
+      "🚀 Notifications Android sur PC : Le secret des pros dévoilé !"
+    ],
     "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens": [],
     "ASTUCES ET PRODUCTIVITÉ - Scanner un document avec son smartphone": [],
     "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": [],
