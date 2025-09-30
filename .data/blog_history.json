@@ -35,7 +35,9 @@
     "435a21f079128ca884ee1ed94e4c71dc7b62fdba",
     "65ecb335afd525a646f8035fc5f507135129c77b",
     "b451ce68192bb07a8eecdab315db3ac24bfd24e7",
-    "e68075e45296ff3fd614d8a03bb6a5ac0f1e7039"
+    "e68075e45296ff3fd614d8a03bb6a5ac0f1e7039",
+    "f620532e5f68bba2e4a1f7cebb94f1ba44b3b27e",
+    "c3dabf3f6cd0af6f790ff8cab785c44f9a8c29a1"
   ],
   "days": {
     "2025-09-14": [
@@ -97,9 +99,13 @@
     "2025-09-29": [
       "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens",
       "ASTUCES ET PRODUCTIVITÉ - Scanner un document avec son smartphone"
+    ],
+    "2025-09-30": [
+      "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email",
+      "ASTUCES ET PRODUCTIVITÉ - Faire une capture d’écran défilante sur Android"
     ]
   },
-  "cat_index": 36,
+  "cat_index": 38,
   "category_loops": {
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Comment protéger un compte Facebook contre le piratage": 1,
     "SÉCURITÉ INFORMATIQUE ET PROTECTION DES DONNÉES - Reconnaître et éviter les fausses pages Facebook (phishing)": 1,
@@ -137,8 +143,8 @@
     "ASTUCES ET PRODUCTIVITÉ - Avoir ses notifications Android sur PC": 1,
     "ASTUCES ET PRODUCTIVITÉ - Traduire instantanément un texte avec Google Lens": 1,
     "ASTUCES ET PRODUCTIVITÉ - Scanner un document avec son smartphone": 1,
-    "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": 0,
-    "ASTUCES ET PRODUCTIVITÉ - Faire une capture d’écran défilante sur Android": 0,
+    "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": 1,
+    "ASTUCES ET PRODUCTIVITÉ - Faire une capture d’écran défilante sur Android": 1,
     "ASTUCES ET PRODUCTIVITÉ - Utiliser un VPN pour protéger sa connexion": 0,
     "ASTUCES ET PRODUCTIVITÉ - Trouver l’emplacement où une photo a été prise": 0,
     "MAINTENANCE ET DÉPANNAGE - Réparer une clé USB corrompue": 0,
@@ -939,8 +945,12 @@
     "ASTUCES ET PRODUCTIVITÉ - Scanner un document avec son smartphone": [
       "🤯 Scannez vos documents PRO : votre smartphone suffit !"
     ],
-    "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": [],
-    "ASTUCES ET PRODUCTIVITÉ - Faire une capture d’écran défilante sur Android": [],
+    "ASTUCES ET PRODUCTIVITÉ - Partager un gros fichier sans email": [
+      "🚀 Gros fichier ? Oubliez l'email ! La méthode ULTIME 2025."
+    ],
+    "ASTUCES ET PRODUCTIVITÉ - Faire une capture d’écran défilante sur Android": [
+      "🔥 Android: Faites des captures défilantes comme un pro !"
+    ],
     "ASTUCES ET PRODUCTIVITÉ - Utiliser un VPN pour protéger sa connexion": [],
     "ASTUCES ET PRODUCTIVITÉ - Trouver l’emplacement où une photo a été prise": [],
     "MAINTENANCE ET DÉPANNAGE - Réparer une clé USB corrompue": [],
